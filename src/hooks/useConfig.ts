@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { SiteConfiguration, Theme, Section } from '../types/config';
+import { SiteConfiguration, Theme, Section, ApiResponse } from '../types/config';
 
 export function useConfig() {
   const [config, setConfig] = useState<SiteConfiguration | null>(null);
@@ -9,13 +9,23 @@ export function useConfig() {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const response = await fetch('/config.json');
+        // Fetch from API endpoint
+        const response = await fetch('http://localhost:8000/', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+          },
+          body: '',
+        });
 
         if (!response.ok) {
-          throw new Error('Failed to load configuration');
+          throw new Error('Failed to load configuration from API');
         }
 
-        const data = await response.json();
+        const apiResponse: ApiResponse = await response.json();
+        
+        // Extract the contents from the API response
+        const data = apiResponse.contents;
         
         // Ensure backward compatibility by adding legacy theme properties
         if (data.siteConfig?.theme) {
@@ -34,7 +44,7 @@ export function useConfig() {
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        console.error('Error loading config:', err);
+        console.error('Error loading config from API:', err);
       } finally {
         setLoading(false);
       }

@@ -380,6 +380,16 @@ export interface SiteConfiguration {
 }
 
 // ============================================================================
+// API Response Type
+// ============================================================================
+
+export interface ApiResponse {
+  id: number;
+  url: string;
+  contents: SiteConfiguration;
+}
+
+// ============================================================================
 // Legacy Type Support (for backward compatibility)
 // ============================================================================
 
