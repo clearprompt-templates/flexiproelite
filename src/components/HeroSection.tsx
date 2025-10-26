@@ -5,14 +5,25 @@ import { Hero, Theme } from '../types/config';
 interface HeroSectionProps {
   hero: Hero;
   theme: Theme;
+  uiText: {
+    badge: string;
+    learnMoreButton: string;
+    scrollIndicator: string;
+    features: Array<{ icon: string; text: string }>;
+  };
 }
 
-export function HeroSection({ hero, theme }: HeroSectionProps) {
-  const features = [
-    { icon: Zap, text: 'Lightning Fast' },
-    { icon: Sparkles, text: 'Innovative' },
-    { icon: Rocket, text: 'Scalable' },
-  ];
+const iconMap: Record<string, typeof Zap> = {
+  zap: Zap,
+  sparkles: Sparkles,
+  rocket: Rocket,
+};
+
+export function HeroSection({ hero, theme, uiText }: HeroSectionProps) {
+  const features = uiText.features.map(f => ({
+    icon: iconMap[f.icon] || Sparkles,
+    text: f.text
+  }));
 
   return (
     <section
@@ -25,14 +36,21 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
         backgroundAttachment: 'fixed',
       }}
     >
-      {/* Gradient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-900/90 via-secondary-900/80 to-primary-900/90" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+      {/* Gradient Overlays - Darker for better text contrast */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, ${theme.primaryColor}dd 0%, ${theme.secondaryColor}bb 50%, ${theme.primaryColor}dd 100%)`
+        }}
+      />
+      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-20 left-10 w-72 h-72 bg-primary-500/20 rounded-full blur-3xl"
+          className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl"
+          style={{ backgroundColor: `${theme.primaryColor}33` }}
           animate={{
             scale: [1, 1.2, 1],
             x: [0, 50, 0],
@@ -41,7 +59,8 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-secondary-500/20 rounded-full blur-3xl"
+          className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl"
+          style={{ backgroundColor: `${theme.secondaryColor}33` }}
           animate={{
             scale: [1, 1.3, 1],
             x: [0, -30, 0],
@@ -59,10 +78,23 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
           transition={{ duration: 0.6 }}
           className="mb-8 inline-flex"
         >
-          <div className="glass-dark px-6 py-2 rounded-full border border-white/20">
-            <span className="text-white/90 text-sm font-semibold flex items-center gap-2">
-              <Sparkles size={16} className="text-secondary-400" />
-              Welcome to the Future of Workflow
+          <div 
+            className="px-6 py-2 rounded-full border"
+            style={{
+              background: 'rgba(0, 0, 0, 0.5)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              borderColor: 'rgba(255, 255, 255, 0.3)'
+            }}
+          >
+            <span 
+              className="text-white text-sm font-semibold flex items-center gap-2"
+              style={{
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              <Sparkles size={16} style={{ color: '#ffffff', filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))' }} />
+              {uiText.badge}
             </span>
           </div>
         </motion.div>
@@ -73,9 +105,17 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
           className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6 leading-tight"
+          style={{
+            textShadow: '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3)'
+          }}
         >
           {hero.title.split(' ').slice(0, 3).join(' ')}
-          <span className="block text-gradient mt-2">
+          <span 
+            className="block text-gradient mt-2"
+            style={{
+              filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5))'
+            }}
+          >
             {hero.title.split(' ').slice(3).join(' ')}
           </span>
         </motion.h1>
@@ -85,7 +125,11 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-xl md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed"
+          className="text-xl md:text-2xl text-white mb-12 max-w-3xl mx-auto leading-relaxed"
+          style={{
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.4)',
+            opacity: 0.95
+          }}
         >
           {hero.subtitle}
         </motion.p>
@@ -101,7 +145,11 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
             href={hero.ctaLink}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="group px-8 py-4 rounded-xl font-bold text-white btn-gradient shadow-2xl shadow-primary-500/50 flex items-center gap-2"
+            className="group px-8 py-4 rounded-xl font-bold text-white shadow-2xl flex items-center gap-2"
+            style={{
+              background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
+              boxShadow: `0 25px 50px -12px ${theme.primaryColor}80`
+            }}
           >
             {hero.ctaText}
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -112,7 +160,7 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
             whileTap={{ scale: 0.95 }}
             className="px-8 py-4 rounded-xl font-bold text-white glass-dark border border-white/30 hover:border-white/50 transition-all"
           >
-            Learn More
+            {uiText.learnMoreButton}
           </motion.a>
         </motion.div>
 
@@ -129,10 +177,23 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
-              className="flex items-center gap-2 glass-dark px-4 py-2 rounded-lg border border-white/20"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border"
+              style={{
+                background: 'rgba(0, 0, 0, 0.4)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                borderColor: 'rgba(255, 255, 255, 0.25)'
+              }}
             >
-              <feature.icon size={18} className="text-secondary-400" />
-              <span className="text-white font-semibold">{feature.text}</span>
+              <feature.icon size={18} style={{ color: '#ffffff', filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.5))' }} />
+              <span 
+                className="text-white font-semibold"
+                style={{
+                  textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)'
+                }}
+              >
+                {feature.text}
+              </span>
             </motion.div>
           ))}
         </motion.div>
@@ -157,7 +218,7 @@ export function HeroSection({ hero, theme }: HeroSectionProps) {
               className="w-1.5 h-1.5 bg-white rounded-full"
             />
           </div>
-          <p className="text-xs text-white/70 mt-2">Scroll to explore</p>
+          <p className="text-xs text-white/70 mt-2">{uiText.scrollIndicator}</p>
         </motion.div>
       </motion.div>
     </section>

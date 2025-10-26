@@ -5,20 +5,39 @@ import { About as AboutType, Theme } from '../types/config';
 interface AboutProps {
   about: AboutType;
   theme: Theme;
+  uiText: {
+    badge: string;
+    missionHeading: string;
+    stats: Array<{ label: string; value: string }>;
+    experienceBadge: string;
+    experienceLabel: string;
+  };
 }
 
-export function About({ about, theme }: AboutProps) {
+const iconMap = {
+  users: Users,
+  trending: TrendingUp,
+  award: Award,
+};
+
+export function About({ about, theme, uiText }: AboutProps) {
   const stats = [
-    { icon: Users, label: 'Happy Clients', value: '10,000+' },
-    { icon: TrendingUp, label: 'Growth Rate', value: '250%' },
-    { icon: Award, label: 'Awards Won', value: '50+' },
+    { icon: Users, label: uiText.stats[0].label, value: uiText.stats[0].value },
+    { icon: TrendingUp, label: uiText.stats[1].label, value: uiText.stats[1].value },
+    { icon: Award, label: uiText.stats[2].label, value: uiText.stats[2].value },
   ];
 
   return (
     <section id="about" className="section-padding bg-white relative overflow-hidden">
       {/* Background Decorations */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary-100 rounded-full blur-3xl opacity-30 -z-0" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary-100 rounded-full blur-3xl opacity-30 -z-0" />
+      <div 
+        className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-30 -z-0"
+        style={{ backgroundColor: `${theme.primaryColor}1a` }}
+      />
+      <div 
+        className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-30 -z-0"
+        style={{ backgroundColor: `${theme.secondaryColor}1a` }}
+      />
 
       <div className="container mx-auto container-padding relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -36,8 +55,14 @@ export function About({ about, theme }: AboutProps) {
               transition={{ duration: 0.5 }}
               className="inline-block mb-6"
             >
-              <span className="px-4 py-2 bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 rounded-full text-sm font-semibold">
-                About Us
+              <span 
+                className="px-4 py-2 rounded-full text-sm font-semibold"
+                style={{
+                  background: `linear-gradient(to right, ${theme.primaryColor}1a, ${theme.secondaryColor}1a)`,
+                  color: theme.primaryColor
+                }}
+              >
+                {uiText.badge}
               </span>
             </motion.div>
 
@@ -45,29 +70,43 @@ export function About({ about, theme }: AboutProps) {
               {about.title}
             </h2>
 
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p className="text-lg mb-8 leading-relaxed" style={{ color: `${theme.textColor}cc` }}>
               {about.description}
             </p>
 
             {/* Mission Card */}
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="relative bg-gradient-to-br from-primary-50 to-secondary-50 rounded-2xl p-6 border border-primary-100 mb-8"
+              className="relative rounded-2xl p-6 border mb-8"
+              style={{
+                background: `linear-gradient(135deg, ${theme.primaryColor}0d, ${theme.secondaryColor}0d)`,
+                borderColor: `${theme.primaryColor}1a`
+              }}
             >
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
+                <div 
+                  className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`
+                  }}
+                >
                   <Target size={24} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-3 text-gray-900">
-                    Our Mission
+                  <h3 className="text-2xl font-bold mb-3" style={{ color: theme.textColor }}>
+                    {uiText.missionHeading}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="leading-relaxed" style={{ color: `${theme.textColor}b3` }}>
                     {about.mission}
                   </p>
                 </div>
               </div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full blur-2xl opacity-20" />
+              <div 
+                className="absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl opacity-20"
+                style={{
+                  background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`
+                }}
+              />
             </motion.div>
 
             {/* Stats Grid */}
@@ -82,11 +121,11 @@ export function About({ about, theme }: AboutProps) {
                   whileHover={{ y: -4 }}
                   className="text-center p-4 bg-white rounded-xl shadow-lg border border-gray-100"
                 >
-                  <stat.icon className="w-8 h-8 mx-auto mb-2 text-primary-500" />
+                  <stat.icon className="w-8 h-8 mx-auto mb-2" style={{ color: theme.primaryColor }} />
                   <div className="text-2xl font-bold text-gradient mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-xs text-gray-600 font-semibold">
+                  <div className="text-xs font-semibold" style={{ color: `${theme.textColor}99` }}>
                     {stat.label}
                   </div>
                 </motion.div>
@@ -114,12 +153,20 @@ export function About({ about, theme }: AboutProps) {
                   alt={about.title}
                   className="w-full h-auto object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20" />
+                <div 
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(135deg, ${theme.primaryColor}33, ${theme.secondaryColor}33)`
+                  }}
+                />
               </motion.div>
 
               {/* Floating Decorative Elements */}
               <motion.div
-                className="absolute -top-6 -right-6 w-40 h-40 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-3xl opacity-20 blur-2xl"
+                className="absolute -top-6 -right-6 w-40 h-40 rounded-3xl opacity-20 blur-2xl"
+                style={{
+                  background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`
+                }}
                 animate={{
                   scale: [1, 1.2, 1],
                   rotate: [0, 90, 0],
@@ -131,7 +178,10 @@ export function About({ about, theme }: AboutProps) {
                 }}
               />
               <motion.div
-                className="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-secondary-400 to-primary-400 rounded-2xl opacity-20 blur-2xl"
+                className="absolute -bottom-6 -left-6 w-32 h-32 rounded-2xl opacity-20 blur-2xl"
+                style={{
+                  background: `linear-gradient(135deg, ${theme.secondaryColor}, ${theme.primaryColor})`
+                }}
                 animate={{
                   scale: [1, 1.3, 1],
                   rotate: [0, -90, 0],
@@ -151,8 +201,8 @@ export function About({ about, theme }: AboutProps) {
                 transition={{ duration: 0.5, delay: 0.5 }}
                 className="absolute bottom-8 left-8 bg-white rounded-2xl shadow-2xl p-6 border border-gray-100"
               >
-                <div className="text-5xl font-bold text-gradient mb-1">10+</div>
-                <div className="text-sm font-semibold text-gray-600">Years Experience</div>
+                <div className="text-5xl font-bold text-gradient mb-1">{uiText.experienceBadge}</div>
+                <div className="text-sm font-semibold" style={{ color: `${theme.textColor}99` }}>{uiText.experienceLabel}</div>
               </motion.div>
             </div>
           </motion.div>

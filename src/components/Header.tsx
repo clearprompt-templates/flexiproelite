@@ -8,9 +8,12 @@ interface HeaderProps {
   brand: Brand;
   navigation: NavItem[];
   theme: Theme;
+  uiText: {
+    getStartedButton: string;
+  };
 }
 
-export function Header({ brand, navigation, theme }: HeaderProps) {
+export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -28,8 +31,13 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'glass shadow-lg border-b border-white/20' : 'bg-transparent'
+        scrolled ? 'glass shadow-lg border-b border-white/20' : ''
       }`}
+      style={!scrolled ? {
+        background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3), transparent)',
+        backdropFilter: 'blur(4px)',
+        WebkitBackdropFilter: 'blur(4px)',
+      } : undefined}
     >
       <nav className="container mx-auto container-padding py-4">
         <div className="flex items-center justify-between">
@@ -50,7 +58,7 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               >
-                <Sparkles size={16} className="text-secondary-500" />
+                <Sparkles size={16} style={{ color: theme.secondaryColor }} />
               </motion.div>
             </div>
           </motion.a>
@@ -72,7 +80,10 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
                   {item.label}
                 </span>
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{
+                    background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`
+                  }}
                   whileHover={{ scale: 1.05 }}
                 />
               </motion.a>
@@ -84,9 +95,13 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
               transition={{ duration: 0.5, delay: 0.4 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="ml-4 px-6 py-2.5 rounded-lg font-semibold text-white btn-gradient shadow-lg shadow-primary-500/30"
+              className="ml-4 px-6 py-2.5 rounded-lg font-semibold text-white shadow-lg"
+              style={{
+                background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
+                boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
+              }}
             >
-              Get Started
+              {uiText.getStartedButton}
             </motion.a>
           </div>
 
@@ -121,8 +136,18 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
                   <motion.a
                     key={item.label}
                     href={item.href}
-                    className="block py-3 px-4 rounded-lg font-semibold hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all"
-                    style={{ color: theme.textColor }}
+                    className="block py-3 px-4 rounded-lg font-semibold hover:text-white transition-all"
+                    style={{ 
+                      color: theme.textColor
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`;
+                      e.currentTarget.style.color = '#ffffff';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = theme.textColor;
+                    }}
                     onClick={() => setMobileMenuOpen(false)}
                     whileHover={{ x: 4 }}
                   >
@@ -131,12 +156,15 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
                 ))}
                 <motion.a
                   href="#contact"
-                  className="block py-3 px-4 rounded-lg font-semibold text-white btn-gradient text-center shadow-lg"
+                  className="block py-3 px-4 rounded-lg font-semibold text-white text-center shadow-lg"
+                  style={{
+                    background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`
+                  }}
                   onClick={() => setMobileMenuOpen(false)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Get Started
+                  {uiText.getStartedButton}
                 </motion.a>
               </div>
             </motion.div>

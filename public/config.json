@@ -20,6 +20,62 @@
     "textColor": "#1e293b",
     "fontFamily": "Inter, system-ui, sans-serif"
   },
+  "uiText": {
+    "header": {
+      "getStartedButton": "Get Started"
+    },
+    "hero": {
+      "badge": "Welcome to the Future of Workflow",
+      "learnMoreButton": "Learn More",
+      "scrollIndicator": "Scroll to explore",
+      "features": [
+        {"icon": "zap", "text": "Lightning Fast"},
+        {"icon": "sparkles", "text": "Innovative"},
+        {"icon": "rocket", "text": "Scalable"}
+      ]
+    },
+    "products": {
+      "badge": "Our Products",
+      "heading": "Powerful Solutions",
+      "description": "Discover our suite of innovative tools designed to transform your business and accelerate growth",
+      "popularBadge": "Popular",
+      "priceLabel": "Starting at",
+      "ctaFooter": "Can't find what you're looking for?",
+      "ctaButton": "Contact Our Team"
+    },
+    "about": {
+      "badge": "About Us",
+      "missionHeading": "Our Mission",
+      "stats": [
+        {"label": "Happy Clients", "value": "10,000+"},
+        {"label": "Growth Rate", "value": "250%"},
+        {"label": "Awards Won", "value": "50+"}
+      ],
+      "experienceBadge": "10+",
+      "experienceLabel": "Years Experience"
+    },
+    "contact": {
+      "badge": "Contact Us",
+      "infoLabels": {
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address"
+      },
+      "ctaHeading": "Ready to Get Started?",
+      "ctaDescription": "Let's discuss how we can help transform your business",
+      "ctaButton": "Send us a Message"
+    },
+    "footer": {
+      "description": "Empowering businesses with innovative technology solutions. Join thousands of companies transforming their digital future.",
+      "newsletterPlaceholder": "Enter your email",
+      "newsletterButton": "Subscribe",
+      "quickLinksHeading": "Quick Links",
+      "followUsHeading": "Follow Us",
+      "madeWithText": "Made with",
+      "byText": "by",
+      "bottomLinks": ["Privacy", "Terms", "Sitemap"]
+    }
+  },
   "navigation": [
     { "label": "Home", "href": "#home" },
     { "label": "Products", "href": "#products" },

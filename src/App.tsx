@@ -42,20 +42,38 @@ function App() {
         brand={config.brand}
         navigation={config.navigation}
         theme={config.theme}
+        uiText={config.uiText.header}
       />
 
-      <HeroSection hero={config.hero} theme={config.theme} />
+      <HeroSection 
+        hero={config.hero} 
+        theme={config.theme} 
+        uiText={config.uiText.hero}
+      />
 
-      <ProductGrid products={config.products} theme={config.theme} />
+      <ProductGrid 
+        products={config.products} 
+        theme={config.theme}
+        uiText={config.uiText.products}
+      />
 
-      <About about={config.about} theme={config.theme} />
+      <About 
+        about={config.about} 
+        theme={config.theme}
+        uiText={config.uiText.about}
+      />
 
-      <Contact contact={config.contact} theme={config.theme} />
+      <Contact 
+        contact={config.contact} 
+        theme={config.theme}
+        uiText={config.uiText.contact}
+      />
 
       <Footer
         footer={config.footer}
         theme={config.theme}
         brandName={config.brand.name}
+        uiText={config.uiText.footer}
       />
     </div>
   );

@@ -5,9 +5,18 @@ import { Product, Theme } from '../types/config';
 interface ProductGridProps {
   products: Product[];
   theme: Theme;
+  uiText: {
+    badge: string;
+    heading: string;
+    description: string;
+    popularBadge: string;
+    priceLabel: string;
+    ctaFooter: string;
+    ctaButton: string;
+  };
 }
 
-export function ProductGrid({ products, theme }: ProductGridProps) {
+export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -25,7 +34,6 @@ export function ProductGrid({ products, theme }: ProductGridProps) {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
       },
     },
   };
@@ -47,15 +55,21 @@ export function ProductGrid({ products, theme }: ProductGridProps) {
             transition={{ duration: 0.5 }}
             className="inline-block mb-4"
           >
-            <span className="px-4 py-2 bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 rounded-full text-sm font-semibold">
-              Our Products
+            <span 
+              className="px-4 py-2 rounded-full text-sm font-semibold"
+              style={{
+                background: `linear-gradient(to right, ${theme.primaryColor}1a, ${theme.secondaryColor}1a)`,
+                color: theme.primaryColor
+              }}
+            >
+              {uiText.badge}
             </span>
           </motion.div>
           <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">
-            Powerful Solutions
+            {uiText.heading}
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Discover our suite of innovative tools designed to transform your business and accelerate growth
+          <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: `${theme.textColor}cc` }}>
+            {uiText.description}
           </p>
         </motion.div>
 
@@ -75,14 +89,28 @@ export function ProductGrid({ products, theme }: ProductGridProps) {
               <motion.div
                 whileHover={{ y: -12 }}
                 transition={{ duration: 0.3 }}
-                className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:border-primary-200 transition-all h-full"
+                className="relative bg-white rounded-2xl shadow-xl overflow-hidden border transition-all h-full"
+                style={{ 
+                  borderColor: '#f3f4f6'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = `${theme.primaryColor}33`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#f3f4f6';
+                }}
               >
                 {/* Popular Badge */}
                 {index === 1 && (
                   <div className="absolute top-4 right-4 z-10">
-                    <div className="bg-gradient-to-r from-secondary-500 to-primary-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                    <div 
+                      className="text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"
+                      style={{
+                        background: `linear-gradient(to right, ${theme.secondaryColor}, ${theme.primaryColor})`
+                      }}
+                    >
                       <Star size={12} fill="currentColor" />
-                      Popular
+                      {uiText.popularBadge}
                     </div>
                   </div>
                 )}
@@ -101,17 +129,20 @@ export function ProductGrid({ products, theme }: ProductGridProps) {
 
                 {/* Content */}
                 <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-gradient transition-all">
+                  <h3 
+                    className="text-2xl font-bold mb-3 transition-all"
+                    style={{ color: theme.textColor }}
+                  >
                     {product.name}
                   </h3>
 
-                  <p className="text-gray-600 mb-6 leading-relaxed line-clamp-3">
+                  <p className="mb-6 leading-relaxed line-clamp-3" style={{ color: `${theme.textColor}99` }}>
                     {product.description}
                   </p>
 
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Starting at</p>
+                      <p className="text-xs mb-1" style={{ color: `${theme.textColor}80` }}>{uiText.priceLabel}</p>
                       <span className="text-3xl font-bold text-gradient">
                         {product.price}
                       </span>
@@ -121,7 +152,11 @@ export function ProductGrid({ products, theme }: ProductGridProps) {
                       href={product.ctaLink}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white btn-gradient shadow-lg shadow-primary-500/30 group/btn"
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg group/btn"
+                      style={{
+                        background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
+                        boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
+                      }}
                     >
                       <span className="hidden sm:inline">{product.ctaText}</span>
                       <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -131,13 +166,21 @@ export function ProductGrid({ products, theme }: ProductGridProps) {
 
                 {/* Hover Glow Effect */}
                 <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                  <div className="absolute inset-0 rounded-2xl shadow-glow-lg" />
+                  <div 
+                    className="absolute inset-0 rounded-2xl"
+                    style={{
+                      boxShadow: `0 0 40px ${theme.primaryColor}66`
+                    }}
+                  />
                 </div>
               </motion.div>
 
               {/* Background Gradient Decoration */}
               <motion.div
-                className="absolute -inset-2 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl -z-10 transition-opacity"
+                className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl -z-10 transition-opacity"
+                style={{
+                  background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`
+                }}
                 initial={{ opacity: 0 }}
                 whileHover={{ opacity: 0.2 }}
               />
@@ -153,16 +196,26 @@ export function ProductGrid({ products, theme }: ProductGridProps) {
           transition={{ duration: 0.7, delay: 0.3 }}
           className="text-center mt-16"
         >
-          <p className="text-gray-600 mb-6">
-            Can't find what you're looking for?
+          <p className="mb-6" style={{ color: `${theme.textColor}99` }}>
+            {uiText.ctaFooter}
           </p>
           <motion.a
             href="#contact"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 border-primary-500 text-primary-600 hover:bg-primary-50 transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 transition-all"
+            style={{
+              borderColor: theme.primaryColor,
+              color: theme.primaryColor
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = `${theme.primaryColor}0d`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
           >
-            Contact Our Team
+            {uiText.ctaButton}
             <ArrowRight size={20} />
           </motion.a>
         </motion.div>

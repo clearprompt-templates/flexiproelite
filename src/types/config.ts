@@ -76,9 +76,59 @@ export interface Footer {
   socialMedia: SocialMedia[];
 }
 
+export interface UIText {
+  header: {
+    getStartedButton: string;
+  };
+  hero: {
+    badge: string;
+    learnMoreButton: string;
+    scrollIndicator: string;
+    features: Array<{ icon: string; text: string }>;
+  };
+  products: {
+    badge: string;
+    heading: string;
+    description: string;
+    popularBadge: string;
+    priceLabel: string;
+    ctaFooter: string;
+    ctaButton: string;
+  };
+  about: {
+    badge: string;
+    missionHeading: string;
+    stats: Array<{ label: string; value: string }>;
+    experienceBadge: string;
+    experienceLabel: string;
+  };
+  contact: {
+    badge: string;
+    infoLabels: {
+      email: string;
+      phone: string;
+      address: string;
+    };
+    ctaHeading: string;
+    ctaDescription: string;
+    ctaButton: string;
+  };
+  footer: {
+    description: string;
+    newsletterPlaceholder: string;
+    newsletterButton: string;
+    quickLinksHeading: string;
+    followUsHeading: string;
+    madeWithText: string;
+    byText: string;
+    bottomLinks: string[];
+  };
+}
+
 export interface SiteConfig {
   brand: Brand;
   theme: Theme;
+  uiText: UIText;
   navigation: NavItem[];
   hero: Hero;
   products: Product[];
