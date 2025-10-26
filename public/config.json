@@ -1,0 +1,111 @@
+{
+  "brand": {
+    "name": "TechFlow",
+    "logoUrl": "https://images.pexels.com/photos/1476321/pexels-photo-1476321.jpeg?auto=compress&cs=tinysrgb&w=200&h=60&fit=crop",
+    "tagline": "Innovate Your Workflow"
+  },
+  "theme": {
+    "primaryColor": "#0ea5e9",
+    "secondaryColor": "#3b82f6",
+    "accentColor": "#06b6d4",
+    "backgroundColor": "#ffffff",
+    "textColor": "#1f2937",
+    "fontFamily": "Inter, system-ui, sans-serif"
+  },
+  "navigation": [
+    { "label": "Home", "href": "#home" },
+    { "label": "Products", "href": "#products" },
+    { "label": "About", "href": "#about" },
+    { "label": "Contact", "href": "#contact" }
+  ],
+  "hero": {
+    "title": "Transform Your Business with Smart Technology",
+    "subtitle": "Discover cutting-edge solutions that streamline your operations and boost productivity",
+    "ctaText": "Explore Products",
+    "ctaLink": "#products",
+    "backgroundImage": "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1920"
+  },
+  "products": [
+    {
+      "id": 1,
+      "name": "CloudSync Pro",
+      "description": "Seamlessly sync your files across all devices with enterprise-grade security and lightning-fast performance",
+      "price": "$29.99/mo",
+      "image": "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "ctaText": "Learn More",
+      "ctaLink": "#"
+    },
+    {
+      "id": 2,
+      "name": "DataViz Suite",
+      "description": "Transform complex data into stunning visualizations and interactive dashboards that drive insights",
+      "price": "$49.99/mo",
+      "image": "https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "ctaText": "Learn More",
+      "ctaLink": "#"
+    },
+    {
+      "id": 3,
+      "name": "TeamChat Plus",
+      "description": "Stay connected with your team through secure messaging, video calls, and real-time collaboration tools",
+      "price": "$19.99/mo",
+      "image": "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "ctaText": "Learn More",
+      "ctaLink": "#"
+    },
+    {
+      "id": 4,
+      "name": "AutoFlow AI",
+      "description": "Automate repetitive tasks with intelligent workflows powered by machine learning algorithms",
+      "price": "$79.99/mo",
+      "image": "https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "ctaText": "Learn More",
+      "ctaLink": "#"
+    },
+    {
+      "id": 5,
+      "name": "SecureVault",
+      "description": "Protect your sensitive data with military-grade encryption and advanced access control features",
+      "price": "$39.99/mo",
+      "image": "https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "ctaText": "Learn More",
+      "ctaLink": "#"
+    },
+    {
+      "id": 6,
+      "name": "AnalyticsPro",
+      "description": "Gain deep insights into your business metrics with advanced analytics and predictive modeling",
+      "price": "$59.99/mo",
+      "image": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "ctaText": "Learn More",
+      "ctaLink": "#"
+    }
+  ],
+  "about": {
+    "title": "About TechFlow",
+    "description": "We are a team of passionate innovators dedicated to creating cutting-edge software solutions that empower businesses to thrive in the digital age. With over a decade of experience, we've helped thousands of companies transform their operations and achieve unprecedented growth.",
+    "mission": "Our mission is to democratize access to enterprise-grade technology, making powerful tools available to businesses of all sizes. We believe that innovation should be accessible, intuitive, and impactful.",
+    "image": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "description": "Have questions or want to learn more? We'd love to hear from you.",
+    "email": "hello@techflow.com",
+    "phone": "+1 (555) 123-4567",
+    "address": "123 Innovation Drive, Tech Valley, CA 94025"
+  },
+  "footer": {
+    "copyright": "TechFlow Inc. All rights reserved.",
+    "links": [
+      { "label": "Privacy Policy", "href": "#" },
+      { "label": "Terms of Service", "href": "#" },
+      { "label": "Careers", "href": "#" }
+    ],
+    "socialMedia": [
+      { "platform": "twitter", "url": "https://twitter.com" },
+      { "platform": "linkedin", "url": "https://linkedin.com" },
+      { "platform": "github", "url": "https://github.com" },
+      { "platform": "facebook", "url": "https://facebook.com" }
+    ]
+  }
+}
