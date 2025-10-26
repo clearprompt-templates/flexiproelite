@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Brand, NavItem, Theme } from '../types/config';
+import { Brand, Theme, HeaderNavigation } from '../types/config';
 import { Logo } from './Logo';
 
 interface HeaderProps {
   brand: Brand;
-  navigation: NavItem[];
+  navigation: HeaderNavigation;
   theme: Theme;
-  uiText: {
-    getStartedButton: string;
-  };
 }
 
-export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
+export function Header({ brand, navigation, theme }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -25,15 +22,17 @@ export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  if (!navigation.enabled) return null;
+
   return (
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`${navigation.position === 'fixed' ? 'fixed' : navigation.position === 'sticky' ? 'sticky' : 'relative'} top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'glass shadow-lg border-b border-white/20' : ''
       }`}
-      style={!scrolled ? {
+      style={!scrolled && navigation.style === 'transparent' ? {
         background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3), transparent)',
         backdropFilter: 'blur(4px)',
         WebkitBackdropFilter: 'blur(4px)',
@@ -64,9 +63,9 @@ export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
           </motion.a>
 
           <div className="hidden md:flex items-center space-x-1">
-            {navigation.map((item, index) => (
+            {navigation.items.map((item, index) => (
               <motion.a
-                key={item.label}
+                key={item.id}
                 href={item.href}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -88,21 +87,23 @@ export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
                 />
               </motion.a>
             ))}
-            <motion.a
-              href="#contact"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="ml-4 px-6 py-2.5 rounded-lg font-semibold text-white shadow-lg"
-              style={{
-                background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
-                boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
-              }}
-            >
-              {uiText.getStartedButton}
-            </motion.a>
+            {navigation.cta.enabled && (
+              <motion.a
+                href={navigation.cta.href}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="ml-4 px-6 py-2.5 rounded-lg font-semibold text-white shadow-lg"
+                style={{
+                  background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
+                  boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
+                }}
+              >
+                {navigation.cta.label}
+              </motion.a>
+            )}
           </div>
 
           <motion.button
@@ -132,9 +133,9 @@ export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
               className="md:hidden mt-4 glass rounded-lg overflow-hidden"
             >
               <div className="p-4 space-y-2">
-                {navigation.map((item) => (
+                {navigation.items.map((item) => (
                   <motion.a
-                    key={item.label}
+                    key={item.id}
                     href={item.href}
                     className="block py-3 px-4 rounded-lg font-semibold hover:text-white transition-all"
                     style={{ 
@@ -146,7 +147,7 @@ export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.color = theme.textColor;
+                      e.currentTarget.style.color = theme.textColor || '';
                     }}
                     onClick={() => setMobileMenuOpen(false)}
                     whileHover={{ x: 4 }}
@@ -154,18 +155,20 @@ export function Header({ brand, navigation, theme, uiText }: HeaderProps) {
                     {item.label}
                   </motion.a>
                 ))}
-                <motion.a
-                  href="#contact"
-                  className="block py-3 px-4 rounded-lg font-semibold text-white text-center shadow-lg"
-                  style={{
-                    background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`
-                  }}
-                  onClick={() => setMobileMenuOpen(false)}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {uiText.getStartedButton}
-                </motion.a>
+                {navigation.cta.enabled && (
+                  <motion.a
+                    href={navigation.cta.href}
+                    className="block py-3 px-4 rounded-lg font-semibold text-white text-center shadow-lg"
+                    style={{
+                      background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`
+                    }}
+                    onClick={() => setMobileMenuOpen(false)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {navigation.cta.label}
+                  </motion.a>
+                )}
               </div>
             </motion.div>
           )}

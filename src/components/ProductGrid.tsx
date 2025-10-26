@@ -1,22 +1,15 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Star } from 'lucide-react';
-import { Product, Theme } from '../types/config';
+import { Theme, ProductGridSection } from '../types/config';
 
 interface ProductGridProps {
-  products: Product[];
+  section: ProductGridSection;
   theme: Theme;
-  uiText: {
-    badge: string;
-    heading: string;
-    description: string;
-    popularBadge: string;
-    priceLabel: string;
-    ctaFooter: string;
-    ctaButton: string;
-  };
 }
 
-export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
+export function ProductGrid({ section, theme }: ProductGridProps) {
+  const { content, settings } = section;
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -62,14 +55,14 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
                 color: theme.primaryColor
               }}
             >
-              {uiText.badge}
+              {content.badge}
             </span>
           </motion.div>
           <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">
-            {uiText.heading}
+            {content.heading}
           </h2>
           <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: `${theme.textColor}cc` }}>
-            {uiText.description}
+            {content.description}
           </p>
         </motion.div>
 
@@ -80,7 +73,7 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {products.map((product, index) => (
+          {content.items.map((product, index) => (
             <motion.div
               key={product.id}
               variants={itemVariants}
@@ -101,7 +94,7 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
                 }}
               >
                 {/* Popular Badge */}
-                {index === 1 && (
+                {(product.featured || index === settings.popularIndex) && (
                   <div className="absolute top-4 right-4 z-10">
                     <div 
                       className="text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"
@@ -110,7 +103,7 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
                       }}
                     >
                       <Star size={12} fill="currentColor" />
-                      {uiText.popularBadge}
+                      {content.labels.popularBadge}
                     </div>
                   </div>
                 )}
@@ -118,8 +111,8 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
                 {/* Image */}
                 <div className="relative h-56 overflow-hidden">
                   <motion.img
-                    src={product.image}
-                    alt={product.name}
+                    src={product.image.url}
+                    alt={product.image.alt}
                     className="w-full h-full object-cover"
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.4 }}
@@ -142,14 +135,16 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
 
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div>
-                      <p className="text-xs mb-1" style={{ color: `${theme.textColor}80` }}>{uiText.priceLabel}</p>
+                      <p className="text-xs mb-1" style={{ color: `${theme.textColor}80` }}>
+                        {content.labels.priceLabel}
+                      </p>
                       <span className="text-3xl font-bold text-gradient">
                         {product.price}
                       </span>
                     </div>
 
                     <motion.a
-                      href={product.ctaLink}
+                      href={product.cta.href}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg group/btn"
@@ -158,7 +153,7 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
                         boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
                       }}
                     >
-                      <span className="hidden sm:inline">{product.ctaText}</span>
+                      <span className="hidden sm:inline">{product.cta.text}</span>
                       <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                     </motion.a>
                   </div>
@@ -197,10 +192,10 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
           className="text-center mt-16"
         >
           <p className="mb-6" style={{ color: `${theme.textColor}99` }}>
-            {uiText.ctaFooter}
+            {content.footer.text}
           </p>
           <motion.a
-            href="#contact"
+            href={content.footer.cta.href}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 transition-all"
@@ -215,7 +210,7 @@ export function ProductGrid({ products, theme, uiText }: ProductGridProps) {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            {uiText.ctaButton}
+            {content.footer.cta.text}
             <ArrowRight size={20} />
           </motion.a>
         </motion.div>

@@ -1,29 +1,29 @@
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageCircle } from 'lucide-react';
-import { Contact as ContactType, Theme } from '../types/config';
+import { Theme, ContactSection as ContactSectionType } from '../types/config';
 
 interface ContactProps {
-  contact: ContactType;
+  section: ContactSectionType;
   theme: Theme;
-  uiText: {
-    badge: string;
-    infoLabels: {
-      email: string;
-      phone: string;
-      address: string;
-    };
-    ctaHeading: string;
-    ctaDescription: string;
-    ctaButton: string;
-  };
 }
 
-export function Contact({ contact, theme, uiText }: ContactProps) {
-  const contactInfo = [
-    { icon: Mail, label: uiText.infoLabels.email, value: contact.email, href: `mailto:${contact.email}`, color: { from: '#3b82f6', to: '#06b6d4' } },
-    { icon: Phone, label: uiText.infoLabels.phone, value: contact.phone, href: `tel:${contact.phone}`, color: { from: '#10b981', to: '#059669' } },
-    { icon: MapPin, label: uiText.infoLabels.address, value: contact.address, href: null, color: { from: '#a855f7', to: '#ec4899' } },
-  ];
+const iconMap: Record<string, typeof Mail> = {
+  mail: Mail,
+  phone: Phone,
+  mapPin: MapPin,
+  send: Send,
+  messageCircle: MessageCircle,
+};
+
+export function Contact({ section, theme }: ContactProps) {
+  const { content } = section;
+  
+  const contactInfo = content.contactInfo.map(item => ({
+    ...item,
+    icon: iconMap[item.icon] || Mail,
+  }));
+
+  const CTAIcon = iconMap[content.cta.button.icon] || Send;
 
   return (
     <section id="contact" className="section-padding bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
@@ -57,20 +57,20 @@ export function Contact({ contact, theme, uiText }: ContactProps) {
             }}
           >
             <MessageCircle size={16} />
-            {uiText.badge}
+            {content.badge}
           </motion.div>
           <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">
-            {contact.title}
+            {content.heading}
           </h2>
           <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: `${theme.textColor}cc` }}>
-            {contact.description}
+            {content.description}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {contactInfo.map((item, index) => (
             <motion.div
-              key={item.label}
+              key={item.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -112,7 +112,7 @@ export function Contact({ contact, theme, uiText }: ContactProps) {
                     className="font-medium break-words transition-colors"
                     style={{ color: `${theme.textColor}99` }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = theme.primaryColor;
+                      e.currentTarget.style.color = theme.primaryColor || '';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.color = `${theme.textColor}99`;
@@ -170,13 +170,13 @@ export function Contact({ contact, theme, uiText }: ContactProps) {
 
             <div className="relative z-10">
               <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                {uiText.ctaHeading}
+                {content.cta.heading}
               </h3>
               <p className="text-lg text-white/90 mb-8">
-                {uiText.ctaDescription}
+                {content.cta.description}
               </p>
               <motion.a
-                href={`mailto:${contact.email}`}
+                href={`mailto:${content.contactInfo.find(item => item.type === 'email')?.value || ''}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white rounded-xl font-bold shadow-2xl transition-all"
@@ -188,8 +188,8 @@ export function Contact({ contact, theme, uiText }: ContactProps) {
                   e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0,0,0,0.25)';
                 }}
               >
-                {uiText.ctaButton}
-                <Send size={20} />
+                {content.cta.button.text}
+                <CTAIcon size={20} />
               </motion.a>
             </div>
           </div>

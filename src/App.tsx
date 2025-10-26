@@ -8,72 +8,98 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ErrorFallback } from './components/ErrorFallback';
+import type { Section } from './types/config';
 
 function App() {
-  const { config, loading, error } = useConfig();
+  const { config, loading, error, getEnabledSections, theme, brand, navigation } = useConfig();
 
   useEffect(() => {
-    if (config) {
-      document.documentElement.style.setProperty('--primary-color', config.theme.primaryColor);
-      document.documentElement.style.setProperty('--secondary-color', config.theme.secondaryColor);
-      document.documentElement.style.setProperty('--accent-color', config.theme.accentColor);
-      document.documentElement.style.setProperty('--background-color', config.theme.backgroundColor);
-      document.documentElement.style.setProperty('--text-color', config.theme.textColor);
+    if (config && theme) {
+      // Set CSS variables for theme
+      document.documentElement.style.setProperty('--primary-color', theme.primaryColor || '');
+      document.documentElement.style.setProperty('--secondary-color', theme.secondaryColor || '');
+      document.documentElement.style.setProperty('--accent-color', theme.accentColor || '');
+      document.documentElement.style.setProperty('--background-color', theme.backgroundColor || '');
+      document.documentElement.style.setProperty('--text-color', theme.textColor || '');
 
-      document.body.style.fontFamily = config.theme.fontFamily;
-      document.body.style.backgroundColor = config.theme.backgroundColor;
-      document.body.style.color = config.theme.textColor;
+      // Set body styles
+      document.body.style.fontFamily = theme.fontFamily || '';
+      document.body.style.backgroundColor = theme.backgroundColor || '';
+      document.body.style.color = theme.textColor || '';
 
-      document.title = `${config.brand.name} - ${config.brand.tagline}`;
+      // Set document title
+      if (config.meta) {
+        document.title = config.meta.title;
+      }
     }
-  }, [config]);
+  }, [config, theme]);
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  if (error || !config) {
-    return <ErrorFallback error={error || 'Unknown error occurred'} />;
+  if (error || !config || !theme || !brand || !navigation) {
+    return <ErrorFallback error={error || 'Configuration not found'} />;
   }
+
+  // Get the home page sections
+  const homeSections = getEnabledSections('home');
+
+  // Render a section based on its type
+  const renderSection = (section: Section) => {
+    switch (section.type) {
+      case 'hero':
+        return (
+          <HeroSection
+            key={section.id}
+            section={section}
+            theme={theme}
+          />
+        );
+      case 'productGrid':
+        return (
+          <ProductGrid
+            key={section.id}
+            section={section}
+            theme={theme}
+          />
+        );
+      case 'about':
+        return (
+          <About
+            key={section.id}
+            section={section}
+            theme={theme}
+          />
+        );
+      case 'contact':
+        return (
+          <Contact
+            key={section.id}
+            section={section}
+            theme={theme}
+          />
+        );
+      default:
+        console.warn(`Unknown section type: ${section.type}`);
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen">
       <Header
-        brand={config.brand}
-        navigation={config.navigation}
-        theme={config.theme}
-        uiText={config.uiText.header}
+        brand={brand}
+        navigation={navigation.header}
+        theme={theme}
       />
 
-      <HeroSection 
-        hero={config.hero} 
-        theme={config.theme} 
-        uiText={config.uiText.hero}
-      />
-
-      <ProductGrid 
-        products={config.products} 
-        theme={config.theme}
-        uiText={config.uiText.products}
-      />
-
-      <About 
-        about={config.about} 
-        theme={config.theme}
-        uiText={config.uiText.about}
-      />
-
-      <Contact 
-        contact={config.contact} 
-        theme={config.theme}
-        uiText={config.uiText.contact}
-      />
+      {homeSections.map((section) => renderSection(section))}
 
       <Footer
-        footer={config.footer}
-        theme={config.theme}
-        brandName={config.brand.name}
-        uiText={config.uiText.footer}
+        navigation={navigation.footer}
+        theme={theme}
+        brandName={brand.name}
       />
     </div>
   );

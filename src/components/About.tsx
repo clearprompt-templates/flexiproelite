@@ -1,31 +1,29 @@
 import { motion } from 'framer-motion';
 import { Target, Users, TrendingUp, Award } from 'lucide-react';
-import { About as AboutType, Theme } from '../types/config';
+import { Theme, AboutSection as AboutSectionType } from '../types/config';
 
 interface AboutProps {
-  about: AboutType;
+  section: AboutSectionType;
   theme: Theme;
-  uiText: {
-    badge: string;
-    missionHeading: string;
-    stats: Array<{ label: string; value: string }>;
-    experienceBadge: string;
-    experienceLabel: string;
-  };
 }
 
-const iconMap = {
+const iconMap: Record<string, typeof Users> = {
   users: Users,
   trending: TrendingUp,
   award: Award,
+  target: Target,
 };
 
-export function About({ about, theme, uiText }: AboutProps) {
-  const stats = [
-    { icon: Users, label: uiText.stats[0].label, value: uiText.stats[0].value },
-    { icon: TrendingUp, label: uiText.stats[1].label, value: uiText.stats[1].value },
-    { icon: Award, label: uiText.stats[2].label, value: uiText.stats[2].value },
-  ];
+export function About({ section, theme }: AboutProps) {
+  const { content } = section;
+  
+  const stats = content.stats.map(stat => ({
+    icon: iconMap[stat.icon] || Users,
+    label: stat.label,
+    value: stat.value,
+  }));
+
+  const MissionIcon = iconMap[content.mission.icon] || Target;
 
   return (
     <section id="about" className="section-padding bg-white relative overflow-hidden">
@@ -62,16 +60,16 @@ export function About({ about, theme, uiText }: AboutProps) {
                   color: theme.primaryColor
                 }}
               >
-                {uiText.badge}
+                {content.badge}
               </span>
             </motion.div>
 
             <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">
-              {about.title}
+              {content.heading}
             </h2>
 
             <p className="text-lg mb-8 leading-relaxed" style={{ color: `${theme.textColor}cc` }}>
-              {about.description}
+              {content.description}
             </p>
 
             {/* Mission Card */}
@@ -90,14 +88,14 @@ export function About({ about, theme, uiText }: AboutProps) {
                     background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`
                   }}
                 >
-                  <Target size={24} className="text-white" />
+                  <MissionIcon size={24} className="text-white" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold mb-3" style={{ color: theme.textColor }}>
-                    {uiText.missionHeading}
+                    {content.mission.heading}
                   </h3>
                   <p className="leading-relaxed" style={{ color: `${theme.textColor}b3` }}>
-                    {about.mission}
+                    {content.mission.text}
                   </p>
                 </div>
               </div>
@@ -149,8 +147,8 @@ export function About({ about, theme, uiText }: AboutProps) {
                 className="relative overflow-hidden rounded-3xl shadow-2xl"
               >
                 <img
-                  src={about.image}
-                  alt={about.title}
+                  src={content.image.url}
+                  alt={content.image.alt}
                   className="w-full h-auto object-cover"
                 />
                 <div 
@@ -201,8 +199,12 @@ export function About({ about, theme, uiText }: AboutProps) {
                 transition={{ duration: 0.5, delay: 0.5 }}
                 className="absolute bottom-8 left-8 bg-white rounded-2xl shadow-2xl p-6 border border-gray-100"
               >
-                <div className="text-5xl font-bold text-gradient mb-1">{uiText.experienceBadge}</div>
-                <div className="text-sm font-semibold" style={{ color: `${theme.textColor}99` }}>{uiText.experienceLabel}</div>
+                <div className="text-5xl font-bold text-gradient mb-1">
+                  {content.experience.years}
+                </div>
+                <div className="text-sm font-semibold" style={{ color: `${theme.textColor}99` }}>
+                  {content.experience.label}
+                </div>
               </motion.div>
             </div>
           </motion.div>
