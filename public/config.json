@@ -1,15 +1,23 @@
 {
   "brand": {
     "name": "TechFlow",
-    "logoUrl": "https://images.pexels.com/photos/1476321/pexels-photo-1476321.jpeg?auto=compress&cs=tinysrgb&w=200&h=60&fit=crop",
-    "tagline": "Innovate Your Workflow"
+    "tagline": "Innovate Your Workflow",
+    "logo": {
+      "type": "svg",
+      "width": 200,
+      "height": 60,
+      "textColor": "#6366f1",
+      "iconPrimaryColor": "#6366f1",
+      "iconSecondaryColor": "#8b5cf6",
+      "iconStrokeColor": "#ffffff"
+    }
   },
   "theme": {
-    "primaryColor": "#0ea5e9",
-    "secondaryColor": "#3b82f6",
-    "accentColor": "#06b6d4",
+    "primaryColor": "#6366f1",
+    "secondaryColor": "#8b5cf6",
+    "accentColor": "#ec4899",
     "backgroundColor": "#ffffff",
-    "textColor": "#1f2937",
+    "textColor": "#1e293b",
     "fontFamily": "Inter, system-ui, sans-serif"
   },
   "navigation": [

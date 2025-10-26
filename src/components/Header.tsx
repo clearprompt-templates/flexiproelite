@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Menu, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brand, NavItem, Theme } from '../types/config';
+import { Logo } from './Logo';
 
 interface HeaderProps {
   brand: Brand;
@@ -11,31 +12,50 @@ interface HeaderProps {
 
 export function Header({ brand, navigation, theme }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
-      <nav className="container mx-auto px-4 py-4">
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'glass shadow-lg border-b border-white/20' : 'bg-transparent'
+      }`}
+    >
+      <nav className="container mx-auto container-padding py-4">
         <div className="flex items-center justify-between">
-          <motion.div
+          <motion.a
+            href="#home"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex items-center space-x-3"
+            transition={{ duration: 0.6 }}
+            className="flex items-center space-x-3 group"
           >
-            <img
-              src={brand.logoUrl}
-              alt={`${brand.name} Logo`}
-              className="h-12 w-auto object-contain"
-            />
-            <div>
-              <h1 className="text-xl font-bold" style={{ color: theme.primaryColor }}>
-                {brand.name}
-              </h1>
-              <p className="text-xs text-gray-600">{brand.tagline}</p>
+            <div className="relative">
+              <Logo
+                brand={brand}
+                className="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+              <motion.div
+                className="absolute -top-1 -right-1"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles size={16} className="text-secondary-500" />
+              </motion.div>
             </div>
-          </motion.div>
+          </motion.a>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-1">
             {navigation.map((item, index) => (
               <motion.a
                 key={item.label}
@@ -43,33 +63,48 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-gray-700 hover:opacity-80 transition-opacity font-medium"
+                className="relative px-4 py-2 text-gray-700 font-semibold rounded-lg overflow-hidden group"
                 style={{
-                  color: theme.textColor,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = theme.primaryColor;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = theme.textColor;
+                  color: scrolled ? theme.textColor : '#ffffff',
                 }}
               >
-                {item.label}
+                <span className="relative z-10 group-hover:text-white transition-colors">
+                  {item.label}
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                  whileHover={{ scale: 1.05 }}
+                />
               </motion.a>
             ))}
+            <motion.a
+              href="#contact"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="ml-4 px-6 py-2.5 rounded-lg font-semibold text-white btn-gradient shadow-lg shadow-primary-500/30"
+            >
+              Get Started
+            </motion.a>
           </div>
 
-          <button
-            className="md:hidden p-2"
+          <motion.button
+            className="md:hidden p-2 rounded-lg"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            whileTap={{ scale: 0.9 }}
+            style={{
+              backgroundColor: scrolled ? `${theme.primaryColor}15` : 'rgba(255,255,255,0.2)',
+            }}
           >
             {mobileMenuOpen ? (
-              <X size={24} style={{ color: theme.primaryColor }} />
+              <X size={24} style={{ color: scrolled ? theme.primaryColor : '#ffffff' }} />
             ) : (
-              <Menu size={24} style={{ color: theme.primaryColor }} />
+              <Menu size={24} style={{ color: scrolled ? theme.primaryColor : '#ffffff' }} />
             )}
-          </button>
+          </motion.button>
         </div>
 
         <AnimatePresence>
@@ -79,23 +114,35 @@ export function Header({ brand, navigation, theme }: HeaderProps) {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden mt-4 pb-4"
+              className="md:hidden mt-4 glass rounded-lg overflow-hidden"
             >
-              {navigation.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="block py-2 text-gray-700 hover:opacity-80 transition-opacity"
-                  style={{ color: theme.textColor }}
+              <div className="p-4 space-y-2">
+                {navigation.map((item) => (
+                  <motion.a
+                    key={item.label}
+                    href={item.href}
+                    className="block py-3 px-4 rounded-lg font-semibold hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all"
+                    style={{ color: theme.textColor }}
+                    onClick={() => setMobileMenuOpen(false)}
+                    whileHover={{ x: 4 }}
+                  >
+                    {item.label}
+                  </motion.a>
+                ))}
+                <motion.a
+                  href="#contact"
+                  className="block py-3 px-4 rounded-lg font-semibold text-white btn-gradient text-center shadow-lg"
                   onClick={() => setMobileMenuOpen(false)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {item.label}
-                </a>
-              ))}
+                  Get Started
+                </motion.a>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
-    </header>
+    </motion.header>
   );
 }

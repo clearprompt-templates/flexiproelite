@@ -1,7 +1,16 @@
 export interface Brand {
   name: string;
-  logoUrl: string;
+  logoUrl?: string; // Optional external logo URL
   tagline: string;
+  logo?: {
+    type: 'svg' | 'image'; // 'svg' for generated, 'image' for external URL
+    width?: number;
+    height?: number;
+    textColor?: string;
+    iconPrimaryColor?: string;
+    iconSecondaryColor?: string;
+    iconStrokeColor?: string;
+  };
 }
 
 export interface Theme {
