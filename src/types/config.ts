@@ -199,30 +199,42 @@ export interface HeroContent {
   };
 }
 
-// Product Grid Section
-export interface ProductItem {
+// Card Grid Section (Generic - can be used for products, services, team, portfolio, blog, etc.)
+export interface CardItem {
   id: string;
-  name: string;
-  description: string;
-  price: string;
-  image: ImageContent;
-  cta: CTAButton;
-  tags: string[];
-  featured: boolean;
+  title: string;              // Main heading (e.g., product name, service name, person name, etc.)
+  subtitle?: string;           // Optional subtitle (e.g., job title, category, etc.)
+  description: string;         // Description text
+  media: ImageContent;         // Image or visual content
+  cta?: CTAButton;            // Call-to-action button (optional)
+  tags?: string[];            // Tags/categories (optional)
+  featured?: boolean;         // Highlight this card (optional)
+  metadata?: {                // Flexible key-value pairs for any data you need to display
+    [key: string]: string | number | boolean | undefined;
+    // Use any field names that make sense for your business:
+    // - E-commerce: "amount", "cost", "value", "rate"
+    // - Blog: "publishDate", "readTime", "author"
+    // - Events: "eventDate", "venue", "capacity"
+    // - Services: "duration", "availability", "level"
+    // - Portfolio: "client", "year", "stack"
+    // - Team: "role", "department", "contact"
+    // - Courses: "hours", "lessons", "difficulty"
+    // First defined value will be displayed as primary metadata
+  };
 }
 
-export interface ProductGridContent {
-  badge: string;
-  heading: string;
-  description: string;
-  items: ProductItem[];
-  footer: {
+export interface CardGridContent {
+  badge: string;               // Section badge/label
+  heading: string;             // Section heading
+  description: string;         // Section description
+  items: CardItem[];          // Array of cards
+  footer?: {                  // Optional footer CTA
     text: string;
     cta: CTAButton;
   };
-  labels: {
-    popularBadge: string;
-    priceLabel: string;
+  labels?: {                  // Customizable labels for UI elements
+    featuredBadge?: string;   // Badge text for featured items (e.g., "Popular", "Featured", "Best Seller")
+    metadataLabel?: string;   // Label for metadata display (e.g., "Starting at", "Posted on", "Duration")
   };
 }
 
@@ -301,9 +313,9 @@ export interface HeroSection extends BaseSection {
   content: HeroContent;
 }
 
-export interface ProductGridSection extends BaseSection {
-  type: 'productGrid';
-  content: ProductGridContent;
+export interface CardGridSection extends BaseSection {
+  type: 'cardGrid';
+  content: CardGridContent;
 }
 
 export interface AboutSection extends BaseSection {
@@ -316,7 +328,7 @@ export interface ContactSection extends BaseSection {
   content: ContactContent;
 }
 
-export type Section = HeroSection | ProductGridSection | AboutSection | ContactSection;
+export type Section = HeroSection | CardGridSection | AboutSection | ContactSection;
 
 // ============================================================================
 // Page Types

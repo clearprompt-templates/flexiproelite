@@ -70,7 +70,7 @@
       "style": "transparent",
       "items": [
         { "id": "nav-1", "label": "Home", "href": "#home", "type": "link" },
-        { "id": "nav-2", "label": "Products", "href": "#products", "type": "link" },
+        { "id": "nav-2", "label": "Products", "href": "#cards", "type": "link" },
         { "id": "nav-3", "label": "About", "href": "#about", "type": "link" },
         { "id": "nav-4", "label": "Contact", "href": "#contact", "type": "link" }
       ],
@@ -164,7 +164,7 @@
             "cta": {
               "primary": {
                 "text": "Explore Products",
-                "href": "#products",
+                "href": "#cards",
                 "style": "gradient"
               },
               "secondary": {
@@ -189,8 +189,8 @@
           }
         },
         {
-          "id": "products-section",
-          "type": "productGrid",
+          "id": "cards-section",
+          "type": "cardGrid",
           "enabled": true,
           "order": 2,
           "settings": {
@@ -200,7 +200,7 @@
               "desktop": 3
             },
             "animation": "fadeInUp",
-            "popularIndex": 1
+            "featuredIndex": 1
           },
           "content": {
             "badge": "Our Products",
@@ -208,11 +208,10 @@
             "description": "Discover our suite of innovative tools designed to transform your business and accelerate growth",
             "items": [
               {
-                "id": "product-1",
-                "name": "CloudSync Pro",
+                "id": "card-1",
+                "title": "CloudSync Pro",
                 "description": "Seamlessly sync your files across all devices with enterprise-grade security and lightning-fast performance",
-                "price": "$29.99/mo",
-                "image": {
+                "media": {
                   "url": "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "CloudSync Pro"
                 },
@@ -221,14 +220,16 @@
                   "href": "#"
                 },
                 "tags": ["popular", "cloud"],
-                "featured": false
+                "featured": false,
+                "metadata": {
+                  "value": "$29.99/mo"
+                }
               },
               {
-                "id": "product-2",
-                "name": "DataViz Suite",
+                "id": "card-2",
+                "title": "DataViz Suite",
                 "description": "Transform complex data into stunning visualizations and interactive dashboards that drive insights",
-                "price": "$49.99/mo",
-                "image": {
+                "media": {
                   "url": "https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "DataViz Suite"
                 },
@@ -237,14 +238,16 @@
                   "href": "#"
                 },
                 "tags": ["popular", "analytics"],
-                "featured": true
+                "featured": true,
+                "metadata": {
+                  "value": "$49.99/mo"
+                }
               },
               {
-                "id": "product-3",
-                "name": "TeamChat Plus",
+                "id": "card-3",
+                "title": "TeamChat Plus",
                 "description": "Stay connected with your team through secure messaging, video calls, and real-time collaboration tools",
-                "price": "$19.99/mo",
-                "image": {
+                "media": {
                   "url": "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "TeamChat Plus"
                 },
@@ -253,14 +256,16 @@
                   "href": "#"
                 },
                 "tags": ["communication"],
-                "featured": false
+                "featured": false,
+                "metadata": {
+                  "value": "$19.99/mo"
+                }
               },
               {
-                "id": "product-4",
-                "name": "AutoFlow AI",
+                "id": "card-4",
+                "title": "AutoFlow AI",
                 "description": "Automate repetitive tasks with intelligent workflows powered by machine learning algorithms",
-                "price": "$79.99/mo",
-                "image": {
+                "media": {
                   "url": "https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "AutoFlow AI"
                 },
@@ -269,14 +274,16 @@
                   "href": "#"
                 },
                 "tags": ["ai", "automation"],
-                "featured": false
+                "featured": false,
+                "metadata": {
+                  "value": "$79.99/mo"
+                }
               },
               {
-                "id": "product-5",
-                "name": "SecureVault",
+                "id": "card-5",
+                "title": "SecureVault",
                 "description": "Protect your sensitive data with military-grade encryption and advanced access control features",
-                "price": "$39.99/mo",
-                "image": {
+                "media": {
                   "url": "https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "SecureVault"
                 },
@@ -285,14 +292,16 @@
                   "href": "#"
                 },
                 "tags": ["security"],
-                "featured": false
+                "featured": false,
+                "metadata": {
+                  "value": "$39.99/mo"
+                }
               },
               {
-                "id": "product-6",
-                "name": "AnalyticsPro",
+                "id": "card-6",
+                "title": "AnalyticsPro",
                 "description": "Gain deep insights into your business metrics with advanced analytics and predictive modeling",
-                "price": "$59.99/mo",
-                "image": {
+                "media": {
                   "url": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "AnalyticsPro"
                 },
@@ -301,7 +310,10 @@
                   "href": "#"
                 },
                 "tags": ["analytics"],
-                "featured": false
+                "featured": false,
+                "metadata": {
+                  "value": "$59.99/mo"
+                }
               }
             ],
             "footer": {
@@ -312,8 +324,8 @@
               }
             },
             "labels": {
-              "popularBadge": "Popular",
-              "priceLabel": "Starting at"
+              "featuredBadge": "Popular",
+              "metadataLabel": "Starting at"
             }
           }
         },

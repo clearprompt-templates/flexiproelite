@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useConfig } from './hooks/useConfig';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
-import { ProductGrid } from './components/ProductGrid';
+import { CardGrid } from './components/CardGrid';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
@@ -56,9 +56,9 @@ function App() {
             theme={theme}
           />
         );
-      case 'productGrid':
+      case 'cardGrid':
         return (
-          <ProductGrid
+          <CardGrid
             key={section.id}
             section={section}
             theme={theme}

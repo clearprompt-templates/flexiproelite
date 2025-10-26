@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Star } from 'lucide-react';
-import { Theme, ProductGridSection } from '../types/config';
+import { Theme, CardGridSection } from '../types/config';
 
-interface ProductGridProps {
-  section: ProductGridSection;
+interface CardGridProps {
+  section: CardGridSection;
   theme: Theme;
 }
 
-export function ProductGrid({ section, theme }: ProductGridProps) {
+export function CardGrid({ section, theme }: CardGridProps) {
   const { content, settings } = section;
   
   const containerVariants = {
@@ -32,7 +32,7 @@ export function ProductGrid({ section, theme }: ProductGridProps) {
   };
 
   return (
-    <section id="products" className="section-padding bg-gradient-to-b from-gray-50 to-white">
+    <section id="cards" className="section-padding bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto container-padding">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -73,9 +73,9 @@ export function ProductGrid({ section, theme }: ProductGridProps) {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {content.items.map((product, index) => (
+          {content.items.map((card, index) => (
             <motion.div
-              key={product.id}
+              key={card.id}
               variants={itemVariants}
               className="group relative"
             >
@@ -93,8 +93,8 @@ export function ProductGrid({ section, theme }: ProductGridProps) {
                   e.currentTarget.style.borderColor = '#f3f4f6';
                 }}
               >
-                {/* Popular Badge */}
-                {(product.featured || index === settings.popularIndex) && (
+                {/* Featured Badge */}
+                {(card.featured || index === settings.featuredIndex) && (
                   <div className="absolute top-4 right-4 z-10">
                     <div 
                       className="text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"
@@ -103,16 +103,16 @@ export function ProductGrid({ section, theme }: ProductGridProps) {
                       }}
                     >
                       <Star size={12} fill="currentColor" />
-                      {content.labels.popularBadge}
+                      {content.labels?.featuredBadge || 'Featured'}
                     </div>
                   </div>
                 )}
 
-                {/* Image */}
+                {/* Media */}
                 <div className="relative h-56 overflow-hidden">
                   <motion.img
-                    src={product.image.url}
-                    alt={product.image.alt}
+                    src={card.media.url}
+                    alt={card.media.alt}
                     className="w-full h-full object-cover"
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.4 }}
@@ -126,36 +126,48 @@ export function ProductGrid({ section, theme }: ProductGridProps) {
                     className="text-2xl font-bold mb-3 transition-all"
                     style={{ color: theme.textColor }}
                   >
-                    {product.name}
+                    {card.title}
                   </h3>
 
+                  {card.subtitle && (
+                    <p className="text-sm mb-2 font-medium" style={{ color: `${theme.textColor}80` }}>
+                      {card.subtitle}
+                    </p>
+                  )}
+
                   <p className="mb-6 leading-relaxed line-clamp-3" style={{ color: `${theme.textColor}99` }}>
-                    {product.description}
+                    {card.description}
                   </p>
 
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div>
-                      <p className="text-xs mb-1" style={{ color: `${theme.textColor}80` }}>
-                        {content.labels.priceLabel}
-                      </p>
-                      <span className="text-3xl font-bold text-gradient">
-                        {product.price}
-                      </span>
-                    </div>
+                    {card.metadata && Object.keys(card.metadata).length > 0 && (
+                      <div>
+                        {content.labels?.metadataLabel && (
+                          <p className="text-xs mb-1" style={{ color: `${theme.textColor}80` }}>
+                            {content.labels.metadataLabel}
+                          </p>
+                        )}
+                        <span className="text-3xl font-bold text-gradient">
+                          {Object.values(card.metadata).find(val => val !== undefined && val !== null) || ''}
+                        </span>
+                      </div>
+                    )}
 
-                    <motion.a
-                      href={product.cta.href}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg group/btn"
-                      style={{
-                        background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
-                        boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
-                      }}
-                    >
-                      <span className="hidden sm:inline">{product.cta.text}</span>
-                      <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                    </motion.a>
+                    {card.cta && (
+                      <motion.a
+                        href={card.cta.href}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg group/btn"
+                        style={{
+                          background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
+                          boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
+                        }}
+                      >
+                        <span className="hidden sm:inline">{card.cta.text}</span>
+                        <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                      </motion.a>
+                    )}
                   </div>
                 </div>
 
@@ -184,37 +196,40 @@ export function ProductGrid({ section, theme }: ProductGridProps) {
         </motion.div>
 
         {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="text-center mt-16"
-        >
-          <p className="mb-6" style={{ color: `${theme.textColor}99` }}>
-            {content.footer.text}
-          </p>
-          <motion.a
-            href={content.footer.cta.href}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 transition-all"
-            style={{
-              borderColor: theme.primaryColor,
-              color: theme.primaryColor
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = `${theme.primaryColor}0d`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
+        {content.footer && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="text-center mt-16"
           >
-            {content.footer.cta.text}
-            <ArrowRight size={20} />
-          </motion.a>
-        </motion.div>
+            <p className="mb-6" style={{ color: `${theme.textColor}99` }}>
+              {content.footer.text}
+            </p>
+            <motion.a
+              href={content.footer.cta.href}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 transition-all"
+              style={{
+                borderColor: theme.primaryColor,
+                color: theme.primaryColor
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = `${theme.primaryColor}0d`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              {content.footer.cta.text}
+              <ArrowRight size={20} />
+            </motion.a>
+          </motion.div>
+        )}
       </div>
     </section>
   );
 }
+
