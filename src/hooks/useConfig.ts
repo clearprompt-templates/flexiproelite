@@ -9,8 +9,22 @@ export function useConfig() {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
+        // Get environment variables
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const templateId = import.meta.env.VITE_TEMPLATE_ID;
+        const templateName = import.meta.env.VITE_TEMPLATE_NAME;
+
+        if (!apiUrl || !templateId) {
+          throw new Error('Missing required environment variables: VITE_API_URL and VITE_TEMPLATE_ID');
+        }
+
+        // Build URL with template ID as query parameter
+        const url = `${apiUrl}/?template_id=${encodeURIComponent(templateId)}`;
+
+        console.log(`Fetching config for template: ${templateName} (${templateId})`);
+
         // Fetch from API endpoint
-        const response = await fetch('http://localhost:8000/', {
+        const response = await fetch(url, {
           method: 'POST',
           headers: {
             'accept': 'application/json',

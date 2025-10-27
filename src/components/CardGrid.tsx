@@ -139,36 +139,7 @@ export function CardGrid({ section, theme }: CardGridProps) {
                     {card.description}
                   </p>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    {card.metadata && Object.keys(card.metadata).length > 0 && (
-                      <div>
-                        {content.labels?.metadataLabel && (
-                          <p className="text-xs mb-1" style={{ color: `${theme.textColor}80` }}>
-                            {content.labels.metadataLabel}
-                          </p>
-                        )}
-                        <span className="text-3xl font-bold text-gradient">
-                          {Object.values(card.metadata).find(val => val !== undefined && val !== null) || ''}
-                        </span>
-                      </div>
-                    )}
-
-                    {card.cta && (
-                      <motion.a
-                        href={card.cta.href}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg group/btn"
-                        style={{
-                          background: `linear-gradient(to right, ${theme.primaryColor}, ${theme.secondaryColor})`,
-                          boxShadow: `0 10px 15px -3px ${theme.primaryColor}30`
-                        }}
-                      >
-                        <span className="hidden sm:inline">{card.cta.text}</span>
-                        <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                      </motion.a>
-                    )}
-                  </div>
+                  
                 </div>
 
                 {/* Hover Glow Effect */}
