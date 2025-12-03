@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { SiteConfiguration, Theme, Section, ApiResponse } from '../types/config';
+import { transformConfig } from '../utils/transformConfig';
 
 export function useConfig() {
   const [config, setConfig] = useState<SiteConfiguration | null>(null);
@@ -23,7 +24,7 @@ export function useConfig() {
 
         console.log(`Fetching config for template: ${templateName} (${templateId})`);
 
-        // Fetch from API endpoint
+        // Fetch from API endpoint (POST request)
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -39,7 +40,10 @@ export function useConfig() {
         const apiResponse: ApiResponse = await response.json();
         
         // Extract the contents from the API response
-        const data = apiResponse.contents;
+        let data = apiResponse.contents;
+        
+        // Transform the data to handle API structure differences
+        data = transformConfig(data);
         
         // Ensure backward compatibility by adding legacy theme properties
         if (data.siteConfig?.theme) {

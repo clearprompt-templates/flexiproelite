@@ -23,7 +23,12 @@ export function About({ section, theme }: AboutProps) {
     value: stat.value,
   }));
 
-  const MissionIcon = iconMap[content.mission.icon] || Target;
+  // Handle mission as string or object
+  const mission = typeof content.mission === 'string' 
+    ? { heading: 'Our Mission', text: content.mission, icon: 'Target' }
+    : content.mission;
+  
+  const MissionIcon = iconMap[mission.icon] || Target;
 
   return (
     <section id="about" className="section-padding bg-white relative overflow-hidden">
@@ -92,10 +97,10 @@ export function About({ section, theme }: AboutProps) {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold mb-3" style={{ color: theme.textColor }}>
-                    {content.mission.heading}
+                    {mission.heading}
                   </h3>
                   <p className="leading-relaxed" style={{ color: `${theme.textColor}b3` }}>
-                    {content.mission.text}
+                    {mission.text}
                   </p>
                 </div>
               </div>
@@ -192,20 +197,22 @@ export function About({ section, theme }: AboutProps) {
               />
 
               {/* Experience Badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="absolute bottom-8 left-8 bg-white rounded-2xl shadow-2xl p-6 border border-gray-100"
-              >
-                <div className="text-5xl font-bold text-gradient mb-1">
-                  {content.experience.years}
-                </div>
-                <div className="text-sm font-semibold" style={{ color: `${theme.textColor}99` }}>
-                  {content.experience.label}
-                </div>
-              </motion.div>
+              {content.experience && content.experience.years && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="absolute bottom-8 left-8 bg-white rounded-2xl shadow-2xl p-6 border border-gray-100"
+                >
+                  <div className="text-5xl font-bold text-gradient mb-1">
+                    {content.experience.years}
+                  </div>
+                  <div className="text-sm font-semibold" style={{ color: `${theme.textColor}99` }}>
+                    {content.experience.label}
+                  </div>
+                </motion.div>
+              )}
             </div>
           </motion.div>
         </div>

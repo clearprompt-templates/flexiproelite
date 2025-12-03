@@ -73,7 +73,7 @@ export function CardGrid({ section, theme }: CardGridProps) {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {content.items.map((card, index) => (
+          {(content.items || []).map((card, index) => (
             <motion.div
               key={card.id}
               variants={itemVariants}
@@ -109,16 +109,18 @@ export function CardGrid({ section, theme }: CardGridProps) {
                 )}
 
                 {/* Media */}
-                <div className="relative h-56 overflow-hidden">
-                  <motion.img
-                    src={card.media.url}
-                    alt={card.media.alt}
-                    className="w-full h-full object-cover"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.4 }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
+                {card.media?.url && (
+                  <div className="relative h-56 overflow-hidden">
+                    <motion.img
+                      src={card.media.url}
+                      alt={card.media.alt || card.title}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                )}
 
                 {/* Content */}
                 <div className="p-6">

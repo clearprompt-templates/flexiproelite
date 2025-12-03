@@ -217,7 +217,9 @@ export function HeroSection({ section, theme }: HeroSectionProps) {
                 className="w-1.5 h-1.5 bg-white rounded-full"
               />
             </div>
-            <p className="text-xs text-white/70 mt-2">{content.scrollIndicator.text}</p>
+            {content.scrollIndicator.text && (
+              <p className="text-xs text-white/70 mt-2">{content.scrollIndicator.text}</p>
+            )}
           </motion.div>
         </motion.div>
       )}

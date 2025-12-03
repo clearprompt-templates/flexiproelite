@@ -76,7 +76,7 @@ export function Footer({ navigation, theme, brandName }: FooterProps) {
                   <div className="flex gap-2 max-w-md">
                     <input
                       type="email"
-                      placeholder={navigation.newsletter.placeholder}
+                      placeholder={navigation.newsletter.placeholder || 'Enter your email'}
                       className="flex-1 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 focus:outline-none text-white placeholder-gray-500 transition-all"
                       style={{
                         borderColor: '#374151'
@@ -102,7 +102,7 @@ export function Footer({ navigation, theme, brandName }: FooterProps) {
                         e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1)';
                       }}
                     >
-                      {navigation.newsletter.buttonText}
+                      {navigation.newsletter.buttonText || 'Subscribe'}
                     </motion.button>
                   </div>
                 )}

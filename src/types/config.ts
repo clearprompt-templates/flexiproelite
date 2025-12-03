@@ -16,7 +16,7 @@ export interface Brand {
   name: string;
   tagline: string;
   logo?: {
-    type: 'svg' | 'image';
+    type: 'svg' | 'image' | 'text';
     width?: number;
     height?: number;
     textColor?: string;
@@ -130,9 +130,9 @@ export interface FooterColumn {
 
 export interface Newsletter {
   enabled: boolean;
-  heading: string;
-  placeholder: string;
-  buttonText: string;
+  heading?: string;
+  placeholder?: string;
+  buttonText?: string;
 }
 
 export interface FooterBottomBar {
@@ -195,7 +195,7 @@ export interface HeroContent {
   backgroundImage: ImageContent;
   scrollIndicator: {
     visible: boolean;
-    text: string;
+    text?: string;
   };
 }
 
@@ -227,7 +227,14 @@ export interface CardGridContent {
   badge: string;               // Section badge/label
   heading: string;             // Section heading
   description: string;         // Section description
-  items: CardItem[];          // Array of cards
+  items?: CardItem[];          // Array of cards (for cardGrid type)
+  services?: Array<{           // Array of services (for services type - will be transformed to items)
+    id: string;
+    icon: string;
+    title: string;
+    description: string;
+    features?: string[];
+  }>;
   footer?: {                  // Optional footer CTA
     text: string;
     cta: CTAButton;
@@ -250,17 +257,22 @@ export interface AboutContent {
   badge: string;
   heading: string;
   description: string;
-  mission: {
+  mission: string | {
     heading: string;
     text: string;
     icon: string;
   };
   stats: StatItem[];
+  features?: Array<{
+    icon: string;
+    title: string;
+    description: string;
+  }>;
   image: ImageContent;
   experience: {
     years: string;
     label: string;
-  };
+  } | null;
 }
 
 // Contact Section
@@ -274,7 +286,14 @@ export interface ContactInfoItem {
   color: {
     from: string;
     to: string;
-  };
+  } | null;
+}
+
+export interface ContactFormField {
+  name: string;
+  label: string;
+  type: string;
+  required: boolean;
 }
 
 export interface ContactContent {
@@ -282,6 +301,11 @@ export interface ContactContent {
   heading: string;
   description: string;
   contactInfo: ContactInfoItem[];
+  form?: {
+    enabled: boolean;
+    fields: ContactFormField[];
+    submitLabel: string;
+  };
   cta: {
     heading: string;
     description: string;
@@ -289,7 +313,7 @@ export interface ContactContent {
       text: string;
       icon: string;
     };
-  };
+  } | null;
 }
 
 // ============================================================================
@@ -314,7 +338,7 @@ export interface HeroSection extends BaseSection {
 }
 
 export interface CardGridSection extends BaseSection {
-  type: 'cardGrid';
+  type: 'cardGrid' | 'services';
   content: CardGridContent;
 }
 

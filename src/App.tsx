@@ -57,6 +57,7 @@ function App() {
           />
         );
       case 'cardGrid':
+      case 'services':
         return (
           <CardGrid
             key={section.id}
