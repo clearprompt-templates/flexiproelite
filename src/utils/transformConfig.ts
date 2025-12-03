@@ -5,13 +5,33 @@ import type { SiteConfiguration, Section, AboutContent, ContactContent, CardGrid
  * Handles differences between API response and internal types
  */
 export function transformConfig(data: SiteConfiguration): SiteConfiguration {
+  // Validate data structure
+  if (!data) {
+    throw new Error('Configuration data is undefined or null');
+  }
+  
+  if (!data.pages || !Array.isArray(data.pages)) {
+    throw new Error('Configuration missing pages array. Please ensure the config has a valid pages structure.');
+  }
+  
   // Transform pages and their sections
-  const transformedPages = data.pages.map(page => ({
-    ...page,
-    sections: page.sections
-      .map(section => transformSection(section))
-      .filter((section): section is Section => section !== null)
-  }));
+  const transformedPages = data.pages.map(page => {
+    // Ensure page has sections array
+    if (!page.sections || !Array.isArray(page.sections)) {
+      console.warn(`Page ${page.id} missing sections array, using empty array`);
+      return {
+        ...page,
+        sections: []
+      };
+    }
+    
+    return {
+      ...page,
+      sections: page.sections
+        .map(section => transformSection(section))
+        .filter((section): section is Section => section !== null)
+    };
+  });
 
   return {
     ...data,

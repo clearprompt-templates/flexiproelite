@@ -34,13 +34,40 @@ export function useConfig() {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to load configuration from API');
+          const errorText = await response.text();
+          throw new Error(`Failed to load configuration from API: ${response.status} ${response.statusText}. ${errorText}`);
         }
 
-        const apiResponse: ApiResponse = await response.json();
+        const apiResponse: any = await response.json();
+        
+        // Log the response structure for debugging
+        console.log('API Response structure:', {
+          hasContents: !!apiResponse.contents,
+          contentsType: typeof apiResponse.contents,
+          contentsKeys: apiResponse.contents ? Object.keys(apiResponse.contents) : null,
+          responseKeys: Object.keys(apiResponse),
+          fullResponse: apiResponse
+        });
         
         // Extract the contents from the API response
-        let data = apiResponse.contents;
+        // Handle both cases: wrapped in 'contents' or direct response
+        let data = apiResponse.contents || apiResponse;
+        
+        // Validate that data exists and has required structure
+        if (!data) {
+          console.error('API Response:', apiResponse);
+          throw new Error('API response is empty or invalid. Please check the API response structure.');
+        }
+        
+        if (!data.pages || !Array.isArray(data.pages)) {
+          console.error('Data structure:', {
+            hasPages: !!data.pages,
+            pagesType: typeof data.pages,
+            dataKeys: Object.keys(data),
+            data: data
+          });
+          throw new Error('Configuration missing pages array. Please ensure the config has a valid pages structure.');
+        }
         
         // Transform the data to handle API structure differences
         data = transformConfig(data);
