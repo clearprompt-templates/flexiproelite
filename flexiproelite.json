@@ -1,10 +1,10 @@
 {
   "meta": {
     "version": "2.0.0",
-    "lastUpdated": "2025-10-26",
-    "siteId": "techflow-main",
+    "lastUpdated": "2026-07-24",
+    "siteId": "flexiproelite",
     "language": "en",
-    "locales": ["en", "es", "fr"],
+    "locales": ["en"],
     "title": "TechFlow - Innovate Your Workflow",
     "description": "Empowering businesses with innovative technology solutions"
   },
@@ -23,27 +23,39 @@
       }
     },
     "theme": {
+      "themeColor": "#6366f1",
       "colors": {
         "primary": "#6366f1",
         "secondary": "#8b5cf6",
         "accent": "#ec4899",
         "background": "#ffffff",
         "text": "#1e293b",
-        "muted": "#64748b"
+        "foreground": "#1e293b",
+        "muted": "#64748b",
+        "mutedForeground": "#64748b",
+        "primaryForeground": "#ffffff",
+        "secondaryForeground": "#1e293b",
+        "accentForeground": "#ffffff",
+        "card": "#ffffff",
+        "cardForeground": "#1e293b",
+        "border": "#e2e8f0",
+        "input": "#e2e8f0",
+        "ring": "#6366f1",
+        "destructive": "#ef4444"
       },
       "typography": {
-        "fontFamily": "Inter, system-ui, sans-serif",
-        "headingFontFamily": "Inter, system-ui, sans-serif",
+        "fontFamily": "var(--font-inter), system-ui, sans-serif",
+        "headingFontFamily": "var(--font-inter), system-ui, sans-serif",
         "fontSize": {
           "base": "16px",
-          "heading1": "3.5rem",
-          "heading2": "2.5rem",
+          "heading1": "clamp(2.5rem, 6vw, 3.5rem)",
+          "heading2": "clamp(2rem, 4vw, 2.5rem)",
           "heading3": "1.875rem"
         }
       },
       "spacing": {
         "sectionPadding": "6rem",
-        "containerMaxWidth": "1280px"
+        "containerMaxWidth": "80rem"
       },
       "borderRadius": {
         "small": "0.5rem",
@@ -51,11 +63,17 @@
         "large": "1.5rem"
       }
     },
+    "contact": {
+      "email": "hello@techflow.com",
+      "phone": "+1 (555) 123-4567",
+      "location": "123 Innovation Drive, Tech Valley, CA 94025",
+      "locationShort": "Tech Valley, CA"
+    },
     "seo": {
       "keywords": ["technology", "workflow", "innovation", "business solutions"],
       "author": "TechFlow Inc.",
       "ogImage": "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1920",
-      "favicon": "/favicon.ico"
+      "favicon": "/icon.svg"
     },
     "analytics": {
       "googleAnalyticsId": "",
@@ -68,6 +86,7 @@
       "enabled": true,
       "position": "fixed",
       "style": "transparent",
+      "logoHref": "#home",
       "items": [
         { "id": "nav-1", "label": "Home", "href": "#home", "type": "link" },
         { "id": "nav-2", "label": "Products", "href": "#cards", "type": "link" },
@@ -83,6 +102,7 @@
     },
     "footer": {
       "enabled": true,
+      "wordmark": "TechFlow",
       "columns": [
         {
           "id": "footer-col-1",
@@ -105,10 +125,10 @@
           "type": "social",
           "heading": "Follow Us",
           "socialMedia": [
-            { "platform": "twitter", "url": "https://twitter.com", "icon": "twitter" },
-            { "platform": "linkedin", "url": "https://linkedin.com", "icon": "linkedin" },
-            { "platform": "github", "url": "https://github.com", "icon": "github" },
-            { "platform": "facebook", "url": "https://facebook.com", "icon": "facebook" }
+            { "platform": "twitter", "url": "https://twitter.com", "icon": "twitter", "label": "Twitter" },
+            { "platform": "linkedin", "url": "https://linkedin.com", "icon": "linkedin", "label": "LinkedIn" },
+            { "platform": "github", "url": "https://github.com", "icon": "github", "label": "GitHub" },
+            { "platform": "facebook", "url": "https://facebook.com", "icon": "facebook", "label": "Facebook" }
           ]
         }
       ],
@@ -119,8 +139,12 @@
         "buttonText": "Subscribe"
       },
       "bottomBar": {
-        "copyrightText": "TechFlow Inc. All rights reserved.",
-        "links": ["Privacy", "Terms", "Sitemap"],
+        "copyrightText": "© {year} TechFlow Inc. All rights reserved.",
+        "links": [
+          { "label": "Privacy", "href": "#" },
+          { "label": "Terms", "href": "#" },
+          { "label": "Sitemap", "href": "#" }
+        ],
         "customText": {
           "madeWith": "Made with",
           "by": "by"
@@ -199,7 +223,6 @@
               "tablet": 2,
               "desktop": 3
             },
-            "animation": "fadeInUp",
             "featuredIndex": 1
           },
           "content": {
@@ -215,15 +238,10 @@
                   "url": "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "CloudSync Pro"
                 },
-                "cta": {
-                  "text": "Learn More",
-                  "href": "#"
-                },
+                "cta": { "text": "Learn More", "href": "#" },
                 "tags": ["popular", "cloud"],
                 "featured": false,
-                "metadata": {
-                  "value": "$29.99/mo"
-                }
+                "metadata": { "value": "$29.99/mo" }
               },
               {
                 "id": "card-2",
@@ -233,15 +251,10 @@
                   "url": "https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "DataViz Suite"
                 },
-                "cta": {
-                  "text": "Learn More",
-                  "href": "#"
-                },
+                "cta": { "text": "Learn More", "href": "#" },
                 "tags": ["popular", "analytics"],
                 "featured": true,
-                "metadata": {
-                  "value": "$49.99/mo"
-                }
+                "metadata": { "value": "$49.99/mo" }
               },
               {
                 "id": "card-3",
@@ -251,15 +264,10 @@
                   "url": "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "TeamChat Plus"
                 },
-                "cta": {
-                  "text": "Learn More",
-                  "href": "#"
-                },
+                "cta": { "text": "Learn More", "href": "#" },
                 "tags": ["communication"],
                 "featured": false,
-                "metadata": {
-                  "value": "$19.99/mo"
-                }
+                "metadata": { "value": "$19.99/mo" }
               },
               {
                 "id": "card-4",
@@ -269,15 +277,10 @@
                   "url": "https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "AutoFlow AI"
                 },
-                "cta": {
-                  "text": "Learn More",
-                  "href": "#"
-                },
+                "cta": { "text": "Learn More", "href": "#" },
                 "tags": ["ai", "automation"],
                 "featured": false,
-                "metadata": {
-                  "value": "$79.99/mo"
-                }
+                "metadata": { "value": "$79.99/mo" }
               },
               {
                 "id": "card-5",
@@ -287,15 +290,10 @@
                   "url": "https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "SecureVault"
                 },
-                "cta": {
-                  "text": "Learn More",
-                  "href": "#"
-                },
+                "cta": { "text": "Learn More", "href": "#" },
                 "tags": ["security"],
                 "featured": false,
-                "metadata": {
-                  "value": "$39.99/mo"
-                }
+                "metadata": { "value": "$39.99/mo" }
               },
               {
                 "id": "card-6",
@@ -305,15 +303,10 @@
                   "url": "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=600",
                   "alt": "AnalyticsPro"
                 },
-                "cta": {
-                  "text": "Learn More",
-                  "href": "#"
-                },
+                "cta": { "text": "Learn More", "href": "#" },
                 "tags": ["analytics"],
                 "featured": false,
-                "metadata": {
-                  "value": "$59.99/mo"
-                }
+                "metadata": { "value": "$59.99/mo" }
               }
             ],
             "footer": {
@@ -334,10 +327,6 @@
           "type": "about",
           "enabled": true,
           "order": 3,
-          "settings": {
-            "layout": "twoColumn",
-            "imagePosition": "right"
-          },
           "content": {
             "badge": "About Us",
             "heading": "About TechFlow",
@@ -348,24 +337,9 @@
               "icon": "target"
             },
             "stats": [
-              {
-                "id": "stat-1",
-                "icon": "users",
-                "value": "10,000+",
-                "label": "Happy Clients"
-              },
-              {
-                "id": "stat-2",
-                "icon": "trending",
-                "value": "250%",
-                "label": "Growth Rate"
-              },
-              {
-                "id": "stat-3",
-                "icon": "award",
-                "value": "50+",
-                "label": "Awards Won"
-              }
+              { "id": "stat-1", "icon": "users", "value": "10,000+", "label": "Happy Clients" },
+              { "id": "stat-2", "icon": "trending", "value": "250%", "label": "Growth Rate" },
+              { "id": "stat-3", "icon": "award", "value": "50+", "label": "Awards Won" }
             ],
             "image": {
               "url": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -382,10 +356,6 @@
           "type": "contact",
           "enabled": true,
           "order": 4,
-          "settings": {
-            "layout": "grid",
-            "columns": 3
-          },
           "content": {
             "badge": "Contact Us",
             "heading": "Get in Touch",
@@ -398,10 +368,7 @@
                 "label": "Email",
                 "value": "hello@techflow.com",
                 "href": "mailto:hello@techflow.com",
-                "color": {
-                  "from": "#3b82f6",
-                  "to": "#06b6d4"
-                }
+                "color": { "from": "#3b82f6", "to": "#06b6d4" }
               },
               {
                 "id": "contact-phone",
@@ -410,10 +377,7 @@
                 "label": "Phone",
                 "value": "+1 (555) 123-4567",
                 "href": "tel:+15551234567",
-                "color": {
-                  "from": "#10b981",
-                  "to": "#059669"
-                }
+                "color": { "from": "#10b981", "to": "#059669" }
               },
               {
                 "id": "contact-address",
@@ -422,49 +386,32 @@
                 "label": "Address",
                 "value": "123 Innovation Drive, Tech Valley, CA 94025",
                 "href": null,
-                "color": {
-                  "from": "#a855f7",
-                  "to": "#ec4899"
-                }
+                "color": { "from": "#a855f7", "to": "#ec4899" }
               }
             ],
+            "form": {
+              "enabled": true,
+              "fields": [
+                { "name": "name", "label": "Name", "type": "text", "required": true, "placeholder": "Your name" },
+                { "name": "email", "label": "Email", "type": "email", "required": true, "placeholder": "you@company.com" },
+                { "name": "message", "label": "Message", "type": "textarea", "required": true, "placeholder": "How can we help?" }
+              ],
+              "submitLabel": "Send Message",
+              "successTitle": "Message Sent!",
+              "successDescription": "We'll get back to you shortly."
+            },
             "cta": {
               "heading": "Ready to Get Started?",
               "description": "Let's discuss how we can help transform your business",
               "button": {
                 "text": "Send us a Message",
-                "icon": "send"
+                "icon": "send",
+                "href": "#contact"
               }
             }
           }
         }
       ]
     }
-  ],
-  "contentLibrary": {
-    "buttons": {
-      "primary": {
-        "style": "gradient",
-        "rounded": true,
-        "shadow": true
-      },
-      "secondary": {
-        "style": "outline",
-        "rounded": true,
-        "shadow": false
-      }
-    },
-    "animations": {
-      "fadeInUp": {
-        "initial": { "opacity": 0, "y": 40 },
-        "animate": { "opacity": 1, "y": 0 },
-        "transition": { "duration": 0.6 }
-      },
-      "fadeIn": {
-        "initial": { "opacity": 0 },
-        "animate": { "opacity": 1 },
-        "transition": { "duration": 0.5 }
-      }
-    }
-  }
+  ]
 }
