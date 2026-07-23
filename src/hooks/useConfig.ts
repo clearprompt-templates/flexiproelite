@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { SiteConfiguration, Theme, Section } from '../types/config';
 import { transformConfig } from '../utils/transformConfig';
-
-const FALLBACK_CONFIG_URL = '/sample.json';
+import fallbackConfig from '../../flexiproelite.json';
 
 function normalizeConfig(rawData: unknown): SiteConfiguration {
   const data = (rawData as { contents?: SiteConfiguration }).contents || (rawData as SiteConfiguration);
@@ -32,15 +31,8 @@ function normalizeConfig(rawData: unknown): SiteConfiguration {
   return transformed;
 }
 
-async function loadFallbackConfig(): Promise<SiteConfiguration> {
-  const response = await fetch(FALLBACK_CONFIG_URL);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load fallback configuration from ${FALLBACK_CONFIG_URL}`);
-  }
-
-  const data = await response.json();
-  return normalizeConfig(data);
+function loadFallbackConfig(): SiteConfiguration {
+  return normalizeConfig(fallbackConfig);
 }
 
 async function loadConfigFromApi(apiUrl: string, templateId: string, templateName?: string): Promise<SiteConfiguration> {
@@ -88,14 +80,14 @@ export function useConfig() {
         let data: SiteConfiguration;
 
         if (!apiUrl || !templateId) {
-          console.warn('Missing VITE_API_URL or VITE_TEMPLATE_ID. Loading fallback config from sample.json.');
-          data = await loadFallbackConfig();
+          console.warn('Missing VITE_API_URL or VITE_TEMPLATE_ID. Loading fallback config from flexiproelite.json.');
+          data = loadFallbackConfig();
         } else {
           try {
             data = await loadConfigFromApi(apiUrl, templateId, templateName);
           } catch (apiError) {
-            console.warn('Failed to load config from API. Falling back to sample.json.', apiError);
-            data = await loadFallbackConfig();
+            console.warn('Failed to load config from API. Falling back to flexiproelite.json.', apiError);
+            data = loadFallbackConfig();
           }
         }
 
