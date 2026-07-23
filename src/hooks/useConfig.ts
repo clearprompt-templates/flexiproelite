@@ -1,6 +1,77 @@
 import { useState, useEffect, useMemo } from 'react';
-import { SiteConfiguration, Theme, Section, ApiResponse } from '../types/config';
+import { SiteConfiguration, Theme, Section } from '../types/config';
 import { transformConfig } from '../utils/transformConfig';
+
+const FALLBACK_CONFIG_URL = '/sample.json';
+
+function normalizeConfig(rawData: unknown): SiteConfiguration {
+  const data = (rawData as { contents?: SiteConfiguration }).contents || (rawData as SiteConfiguration);
+
+  if (!data) {
+    throw new Error('Configuration data is empty or invalid.');
+  }
+
+  if (!data.pages || !Array.isArray(data.pages)) {
+    throw new Error('Configuration missing pages array. Please ensure the config has a valid pages structure.');
+  }
+
+  const transformed = transformConfig(data);
+
+  if (transformed.siteConfig?.theme) {
+    transformed.siteConfig.theme = {
+      ...transformed.siteConfig.theme,
+      primaryColor: transformed.siteConfig.theme.colors?.primary || transformed.siteConfig.theme.primaryColor,
+      secondaryColor: transformed.siteConfig.theme.colors?.secondary || transformed.siteConfig.theme.secondaryColor,
+      accentColor: transformed.siteConfig.theme.colors?.accent || transformed.siteConfig.theme.accentColor,
+      backgroundColor: transformed.siteConfig.theme.colors?.background || transformed.siteConfig.theme.backgroundColor,
+      textColor: transformed.siteConfig.theme.colors?.text || transformed.siteConfig.theme.textColor,
+      fontFamily: transformed.siteConfig.theme.typography?.fontFamily || transformed.siteConfig.theme.fontFamily,
+    };
+  }
+
+  return transformed;
+}
+
+async function loadFallbackConfig(): Promise<SiteConfiguration> {
+  const response = await fetch(FALLBACK_CONFIG_URL);
+
+  if (!response.ok) {
+    throw new Error(`Failed to load fallback configuration from ${FALLBACK_CONFIG_URL}`);
+  }
+
+  const data = await response.json();
+  return normalizeConfig(data);
+}
+
+async function loadConfigFromApi(apiUrl: string, templateId: string, templateName?: string): Promise<SiteConfiguration> {
+  const url = `${apiUrl}/?template_id=${encodeURIComponent(templateId)}`;
+
+  console.log(`Fetching config for template: ${templateName || 'unknown'} (${templateId})`);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+    },
+    body: '',
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to load configuration from API: ${response.status} ${response.statusText}. ${errorText}`);
+  }
+
+  const apiResponse = await response.json();
+
+  console.log('API Response structure:', {
+    hasContents: !!apiResponse.contents,
+    contentsType: typeof apiResponse.contents,
+    contentsKeys: apiResponse.contents ? Object.keys(apiResponse.contents) : null,
+    responseKeys: Object.keys(apiResponse),
+  });
+
+  return normalizeConfig(apiResponse);
+}
 
 export function useConfig() {
   const [config, setConfig] = useState<SiteConfiguration | null>(null);
@@ -10,86 +81,29 @@ export function useConfig() {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        // Get environment variables
         const apiUrl = import.meta.env.VITE_API_URL;
         const templateId = import.meta.env.VITE_TEMPLATE_ID;
         const templateName = import.meta.env.VITE_TEMPLATE_NAME;
 
+        let data: SiteConfiguration;
+
         if (!apiUrl || !templateId) {
-          throw new Error('Missing required environment variables: VITE_API_URL and VITE_TEMPLATE_ID');
+          console.warn('Missing VITE_API_URL or VITE_TEMPLATE_ID. Loading fallback config from sample.json.');
+          data = await loadFallbackConfig();
+        } else {
+          try {
+            data = await loadConfigFromApi(apiUrl, templateId, templateName);
+          } catch (apiError) {
+            console.warn('Failed to load config from API. Falling back to sample.json.', apiError);
+            data = await loadFallbackConfig();
+          }
         }
 
-        // Build URL with template ID as query parameter
-        const url = `${apiUrl}/?template_id=${encodeURIComponent(templateId)}`;
-
-        console.log(`Fetching config for template: ${templateName} (${templateId})`);
-
-        // Fetch from API endpoint (POST request)
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'accept': 'application/json',
-          },
-          body: '',
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Failed to load configuration from API: ${response.status} ${response.statusText}. ${errorText}`);
-        }
-
-        const apiResponse: any = await response.json();
-        
-        // Log the response structure for debugging
-        console.log('API Response structure:', {
-          hasContents: !!apiResponse.contents,
-          contentsType: typeof apiResponse.contents,
-          contentsKeys: apiResponse.contents ? Object.keys(apiResponse.contents) : null,
-          responseKeys: Object.keys(apiResponse),
-          fullResponse: apiResponse
-        });
-        
-        // Extract the contents from the API response
-        // Handle both cases: wrapped in 'contents' or direct response
-        let data = apiResponse.contents || apiResponse;
-        
-        // Validate that data exists and has required structure
-        if (!data) {
-          console.error('API Response:', apiResponse);
-          throw new Error('API response is empty or invalid. Please check the API response structure.');
-        }
-        
-        if (!data.pages || !Array.isArray(data.pages)) {
-          console.error('Data structure:', {
-            hasPages: !!data.pages,
-            pagesType: typeof data.pages,
-            dataKeys: Object.keys(data),
-            data: data
-          });
-          throw new Error('Configuration missing pages array. Please ensure the config has a valid pages structure.');
-        }
-        
-        // Transform the data to handle API structure differences
-        data = transformConfig(data);
-        
-        // Ensure backward compatibility by adding legacy theme properties
-        if (data.siteConfig?.theme) {
-          data.siteConfig.theme = {
-            ...data.siteConfig.theme,
-            primaryColor: data.siteConfig.theme.colors?.primary || data.siteConfig.theme.primaryColor,
-            secondaryColor: data.siteConfig.theme.colors?.secondary || data.siteConfig.theme.secondaryColor,
-            accentColor: data.siteConfig.theme.colors?.accent || data.siteConfig.theme.accentColor,
-            backgroundColor: data.siteConfig.theme.colors?.background || data.siteConfig.theme.backgroundColor,
-            textColor: data.siteConfig.theme.colors?.text || data.siteConfig.theme.textColor,
-            fontFamily: data.siteConfig.theme.typography?.fontFamily || data.siteConfig.theme.fontFamily,
-          };
-        }
-        
         setConfig(data);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        console.error('Error loading config from API:', err);
+        console.error('Error loading site configuration:', err);
       } finally {
         setLoading(false);
       }
