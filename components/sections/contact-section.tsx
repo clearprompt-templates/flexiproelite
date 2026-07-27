@@ -4,21 +4,12 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { getIcon } from '@/lib/icon-map'
 import { useThemeColors } from '@/lib/use-theme-colors'
-import { getContactApiUrl } from '@/lib/api-config'
 import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
-import type { ContactContent } from '@/lib/site-data'
-
-function buildContactPayload(
-  fields: Array<{ name: string }> | undefined,
-  data: Record<string, string>,
-): Record<string, string> {
-  const payload: Record<string, string> = {}
-  for (const field of fields ?? []) {
-    const v = (data[field.name] ?? '').trim()
-    if (v) payload[field.name] = v
-  }
-  return payload
-}
+import {
+  buildContactPayload,
+  submitContactForm,
+  type ContactContent,
+} from '@/lib/site-data'
 
 function resolveColor(
   color: ContactContent['contactInfo'][0]['color'],
@@ -33,7 +24,6 @@ function resolveColor(
 
 export function ContactSection({ content }: { content: ContactContent }) {
   const colors = useThemeColors()
-  const [formData, setFormData] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -41,34 +31,26 @@ export function ContactSection({ content }: { content: ContactContent }) {
   const MessageIcon = getIcon('messageCircle')
   const formEnabled = content.form?.enabled
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!formEnabled) return
+
     setSubmitError(null)
     setIsSubmitting(true)
-    const payload = buildContactPayload(content.form?.fields, formData)
+
+    const form = e.currentTarget
+    const payload = buildContactPayload(form)
 
     try {
-      const res = await fetch(getContactApiUrl(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      if (!res.ok) {
-        const text = await res.text()
-        let detail = text
-        try {
-          const json = JSON.parse(text) as { message?: string; error?: string }
-          detail = json.message || json.error || text
-        } catch {
-          /* use raw text */
-        }
-        throw new Error(detail || `Request failed (${res.status})`)
-      }
+      await submitContactForm(payload)
       setSubmitted(true)
-      setFormData({})
+      form.reset()
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : UI_DEFAULTS.contactErrorFallback)
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : content.form?.errorMessage || UI_DEFAULTS.contactErrorFallback,
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -80,7 +62,7 @@ export function ContactSection({ content }: { content: ContactContent }) {
 
   return (
     <section
-      id="contact"
+      id={content.sectionId}
       className="section-padding bg-gradient-to-b from-white to-gray-50 relative overflow-hidden"
     >
       <div
@@ -212,10 +194,6 @@ export function ContactSection({ content }: { content: ContactContent }) {
                         required={field.required}
                         rows={4}
                         placeholder={field.placeholder}
-                        value={formData[field.name] || ''}
-                        onChange={(e) =>
-                          setFormData((prev) => ({ ...prev, [field.name]: e.target.value }))
-                        }
                         className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                       />
                     ) : (
@@ -225,10 +203,6 @@ export function ContactSection({ content }: { content: ContactContent }) {
                         type={field.type}
                         required={field.required}
                         placeholder={field.placeholder}
-                        value={formData[field.name] || ''}
-                        onChange={(e) =>
-                          setFormData((prev) => ({ ...prev, [field.name]: e.target.value }))
-                        }
                         className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                       />
                     )}

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { getIcon } from '@/lib/icon-map'
 import { useThemeColors } from '@/lib/use-theme-colors'
+import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
 import type { CardGridContent } from '@/lib/site-data'
 
 export function CardGridSection({ content }: { content: CardGridContent }) {
@@ -29,7 +30,10 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
   }
 
   return (
-    <section id="cards" className="section-padding bg-gradient-to-b from-gray-50 to-white">
+    <section
+      id={content.sectionId}
+      className="section-padding bg-gradient-to-b from-gray-50 to-white"
+    >
       <div className="container mx-auto container-padding">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -90,7 +94,7 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                         }}
                       >
                         <StarIcon size={12} fill="currentColor" />
-                        {content.labels?.featuredBadge || 'Featured'}
+                        {content.labels?.featuredBadge || UI_DEFAULTS.featuredBadgeLabel}
                       </div>
                     </div>
                   )}

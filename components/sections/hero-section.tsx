@@ -18,7 +18,7 @@ export function HeroSection({ content }: { content: HeroContent }) {
 
   return (
     <section
-      id="home"
+      id={content.sectionId}
       className="relative min-h-screen flex items-center justify-center overflow-hidden py-20"
       style={{
         backgroundImage: content.backgroundImage?.url
@@ -97,7 +97,7 @@ export function HeroSection({ content }: { content: HeroContent }) {
           style={{ lineHeight: '1.2' }}
         >
           <span className="block">{firstPart}</span>
-          {content.heading?.gradient && secondPart && (
+          {secondPart && (
             <span
               className="block text-gradient mt-4 pb-2"
               style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}

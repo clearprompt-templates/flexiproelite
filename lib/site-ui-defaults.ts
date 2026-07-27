@@ -13,5 +13,7 @@ export const UI_DEFAULTS = {
   contactSuccessTitle: 'Message Sent!',
   contactSuccessDescription: "We'll get back to you shortly.",
   contactErrorFallback: 'Something went wrong. Please try again.',
+  featuredBadgeLabel: 'Featured',
+  newsletterEmailAriaLabel: 'Email',
   scrollToTopAriaLabel: 'Scroll to top',
 }

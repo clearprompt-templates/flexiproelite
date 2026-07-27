@@ -1,4 +1,4 @@
-import { getTemplatesByOriginUrl } from '@/lib/api-config'
+import { getContactApiUrl, getTemplatesByOriginUrl } from '@/lib/api-config'
 
 export type SiteImage = {
   url: string
@@ -22,8 +22,9 @@ export type CtaButton = {
 }
 
 export type HeroContent = {
+  sectionId: string
   badge?: { text: string; icon?: string; visible?: boolean }
-  heading?: { text: string; gradient?: boolean; splitAt?: number }
+  heading?: { text: string; splitAt?: number }
   headline?: string
   subheading?: { text: string }
   description?: string
@@ -55,6 +56,7 @@ export type CardItem = {
 }
 
 export type CardGridContent = {
+  sectionId: string
   badge?: string
   heading: string
   description?: string
@@ -81,16 +83,15 @@ export type AboutStat = {
 }
 
 export type AboutContent = {
+  sectionId: string
   badge?: string
   heading: string
   description: string
-  mission?:
-    | string
-    | {
-        heading: string
-        text: string
-        icon?: string
-      }
+  mission?: {
+    heading: string
+    text: string
+    icon?: string
+  }
   stats: AboutStat[]
   image?: SiteImage
   experience?: {
@@ -118,6 +119,7 @@ export type ContactFormField = {
 }
 
 export type ContactContent = {
+  sectionId: string
   badge?: string
   heading: string
   description: string
@@ -128,6 +130,7 @@ export type ContactContent = {
     submitLabel: string
     successTitle?: string
     successDescription?: string
+    errorMessage?: string
   }
   cta?: {
     heading: string
@@ -310,10 +313,10 @@ export function getSiteData(): SiteData {
 
 /** Site origin for the ClearPrompt `origin` header — always the real page origin. */
 export function resolveSiteOrigin(): string {
-  if (typeof window !== 'undefined') {
-    return window.location.origin
+  if (typeof window === 'undefined') {
+    throw new Error('Site origin is only available in the browser')
   }
-  return ''
+  return window.location.origin
 }
 
 export async function fetchSiteDataByOrigin(origin?: string): Promise<SiteData> {
@@ -332,7 +335,9 @@ export async function fetchSiteDataByOrigin(origin?: string): Promise<SiteData> 
   })
 
   if (!response.ok) {
-    throw new Error(`Failed to load site config for origin ${siteOrigin}`)
+    throw new Error(
+      `Failed to load site config for origin ${siteOrigin} (HTTP ${response.status})`,
+    )
   }
 
   const payload = (await response.json()) as SiteDataApiResponse
@@ -390,6 +395,43 @@ export async function fetchSiteDataByOrigin(origin?: string): Promise<SiteData> 
 
 export async function loadSiteData(origin?: string): Promise<SiteData> {
   return fetchSiteDataByOrigin(origin)
+}
+
+/** Collect named form fields into a flat JSON body (field set varies by template). */
+export function buildContactPayload(form: HTMLFormElement): Record<string, string> {
+  const payload: Record<string, string> = {}
+  const formData = new FormData(form)
+  formData.forEach((value, key) => {
+    const trimmed = String(value).trim()
+    if (trimmed) payload[key] = trimmed
+  })
+  return payload
+}
+
+export async function submitContactForm(fields: Record<string, string>): Promise<void> {
+  const response = await fetch(getContactApiUrl(), {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(fields),
+  })
+
+  if (!response.ok) {
+    let detail = ''
+    try {
+      const body = (await response.json()) as { message?: string; error?: string }
+      detail = body.message || body.error || ''
+    } catch {
+      try {
+        detail = await response.text()
+      } catch {
+        /* ignore */
+      }
+    }
+    throw new Error(detail || `Contact request failed (${response.status})`)
+  }
 }
 
 export function getHomePage(data: SiteData) {

@@ -7,16 +7,11 @@ import type { AboutContent } from '@/lib/site-data'
 
 export function AboutSection({ content }: { content: AboutContent }) {
   const colors = useThemeColors()
-
-  const mission =
-    typeof content.mission === 'string'
-      ? { heading: 'Our Mission', text: content.mission, icon: 'target' }
-      : content.mission
-
+  const mission = content.mission
   const MissionIcon = getIcon(mission?.icon || 'target')
 
   return (
-    <section id="about" className="section-padding bg-white relative overflow-hidden">
+    <section id={content.sectionId} className="section-padding bg-white relative overflow-hidden">
       <div
         className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-30 -z-0"
         style={{ backgroundColor: `${colors.primary}1a` }}

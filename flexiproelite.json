@@ -69,7 +69,8 @@
       "email": "hello@techflow.com",
       "phone": "+1 (555) 123-4567",
       "location": "123 Innovation Drive, Tech Valley, CA 94025",
-      "locationShort": "Tech Valley, CA"
+      "locationShort": "Tech Valley, CA",
+      "whatsapp": ""
     },
     "seo": {
       "keywords": [
@@ -79,6 +80,7 @@
         "business solutions"
       ],
       "author": "TechFlow Inc.",
+      "siteUrl": "",
       "ogImage": "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1920",
       "favicon": "/icon.svg"
     },
@@ -246,6 +248,7 @@
             "overlayOpacity": 0.6
           },
           "content": {
+            "sectionId": "home",
             "badge": {
               "text": "Welcome to the Future of Workflow",
               "icon": "sparkles",
@@ -253,7 +256,6 @@
             },
             "heading": {
               "text": "Transform Your Business with Smart Technology",
-              "gradient": true,
               "splitAt": 3
             },
             "subheading": {
@@ -262,13 +264,11 @@
             "cta": {
               "primary": {
                 "text": "Explore Products",
-                "href": "#cards",
-                "style": "gradient"
+                "href": "#cards"
               },
               "secondary": {
                 "text": "Learn More",
-                "href": "#about",
-                "style": "glass"
+                "href": "#about"
               }
             },
             "features": [
@@ -309,6 +309,7 @@
             "featuredIndex": 1
           },
           "content": {
+            "sectionId": "cards",
             "badge": "Our Products",
             "heading": "Powerful Solutions",
             "description": "Discover our suite of innovative tools designed to transform your business and accelerate growth",
@@ -456,6 +457,7 @@
           "enabled": true,
           "order": 3,
           "content": {
+            "sectionId": "about",
             "badge": "About Us",
             "heading": "About TechFlow",
             "description": "We are a team of passionate innovators dedicated to creating cutting-edge software solutions that empower businesses to thrive in the digital age. With over a decade of experience, we've helped thousands of companies transform their operations and achieve unprecedented growth.",
@@ -500,6 +502,7 @@
           "enabled": true,
           "order": 4,
           "content": {
+            "sectionId": "contact",
             "badge": "Contact Us",
             "heading": "Get in Touch",
             "description": "Have questions or want to learn more? We'd love to hear from you.",
@@ -568,7 +571,8 @@
               ],
               "submitLabel": "Send Message",
               "successTitle": "Message Sent!",
-              "successDescription": "We'll get back to you shortly."
+              "successDescription": "We'll get back to you shortly.",
+              "errorMessage": "Something went wrong. Please try again."
             },
             "cta": {
               "heading": "Ready to Get Started?",

@@ -72,9 +72,12 @@ export function Footer() {
                   <div className="flex gap-2 max-w-md">
                     <input
                       type="email"
-                      placeholder={navigation.newsletter.placeholder || 'Enter your email'}
+                      placeholder={navigation.newsletter.placeholder}
                       className="flex-1 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 focus:outline-none text-white placeholder-gray-500 transition-all"
-                      aria-label={navigation.newsletter.placeholder || 'Email'}
+                      aria-label={
+                        navigation.newsletter.placeholder ||
+                        UI_DEFAULTS.newsletterEmailAriaLabel
+                      }
                     />
                     <motion.button
                       type="button"
@@ -85,9 +88,7 @@ export function Footer() {
                         background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})`,
                       }}
                     >
-                      {navigation.newsletter.buttonText ||
-                        navigation.newsletter.submitLabel ||
-                        'Subscribe'}
+                      {navigation.newsletter.buttonText || navigation.newsletter.submitLabel}
                     </motion.button>
                   </div>
                 )}
