@@ -161,6 +161,7 @@ export type SiteData = {
     locales: string[]
     title: string
     description: string
+    clearprompt_template_id?: string
   }
   siteConfig: {
     brand: {
@@ -220,6 +221,24 @@ export type SiteData = {
       googleAnalyticsId?: string
       facebookPixelId?: string
       enabled: boolean
+      clearprompt?: {
+        provider?: string
+        api_host?: string
+        website_id?: string
+        template_id?: string
+        organization_id?: string
+        platform?: string
+        tracker_script?: string
+      }
+      narayani?: {
+        provider?: string
+        api_host?: string
+        website_id?: string
+        template_id?: string
+        organization_id?: string
+        platform?: string
+        tracker_script?: string
+      }
     }
   }
   navigation: {
@@ -271,6 +290,8 @@ type SiteDataApiResponse = {
   message: string
   data: {
     json_object?: SiteData
+    template_id?: string
+    organization_id?: string
   }
 }
 
@@ -323,6 +344,44 @@ export async function fetchSiteDataByOrigin(origin?: string): Promise<SiteData> 
       apiMessage ||
         `No site content found for origin ${siteOrigin}. Register this origin in ClearPrompt.`,
     )
+  }
+
+
+  // Prefer API-level template_id when present (local backend / future sandbox)
+  const apiTemplateId = payload.data?.template_id?.trim()
+  const apiOrgId = payload.data?.organization_id?.trim()
+  if (apiTemplateId) {
+    const analytics = data.siteConfig.analytics || {
+      enabled: true,
+      googleAnalyticsId: '',
+      facebookPixelId: '',
+    }
+    const existing = analytics.narayani || analytics.clearprompt || {}
+    const narayani = {
+      ...existing,
+      provider: existing.provider || 'agent-narayani',
+      api_host:
+        existing.api_host || 'https://analytics.clearprompt.dev',
+      website_id:
+        existing.website_id ||
+        '33b60795-c3da-4860-ae16-5ecddaf4183b',
+      template_id: apiTemplateId,
+      organization_id: apiOrgId || existing.organization_id || '',
+      platform: existing.platform || 'clearprompt',
+      tracker_script:
+        existing.tracker_script ||
+        'https://analytics.clearprompt.dev/static/cp-tracker.js',
+    }
+    data.siteConfig.analytics = {
+      enabled: true,
+      googleAnalyticsId: analytics.googleAnalyticsId || '',
+      facebookPixelId: analytics.facebookPixelId || '',
+      narayani,
+    }
+    data.meta = {
+      ...data.meta,
+      clearprompt_template_id: apiTemplateId,
+    }
   }
 
   setSiteData(data)
