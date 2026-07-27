@@ -356,26 +356,27 @@ export async function fetchSiteDataByOrigin(origin?: string): Promise<SiteData> 
       googleAnalyticsId: '',
       facebookPixelId: '',
     }
-    const clearprompt = {
-      ...(analytics.clearprompt || {}),
-      provider: analytics.clearprompt?.provider || 'agent-narayani',
+    const existing = analytics.narayani || analytics.clearprompt || {}
+    const narayani = {
+      ...existing,
+      provider: existing.provider || 'agent-narayani',
       api_host:
-        analytics.clearprompt?.api_host || 'https://analytics.clearprompt.dev',
+        existing.api_host || 'https://analytics.clearprompt.dev',
       website_id:
-        analytics.clearprompt?.website_id ||
+        existing.website_id ||
         '33b60795-c3da-4860-ae16-5ecddaf4183b',
       template_id: apiTemplateId,
-      organization_id: apiOrgId || analytics.clearprompt?.organization_id || '',
-      platform: analytics.clearprompt?.platform || 'clearprompt',
+      organization_id: apiOrgId || existing.organization_id || '',
+      platform: existing.platform || 'clearprompt',
       tracker_script:
-        analytics.clearprompt?.tracker_script ||
+        existing.tracker_script ||
         'https://analytics.clearprompt.dev/static/cp-tracker.js',
     }
     data.siteConfig.analytics = {
-      ...analytics,
       enabled: true,
-      clearprompt,
-      narayani: clearprompt,
+      googleAnalyticsId: analytics.googleAnalyticsId || '',
+      facebookPixelId: analytics.facebookPixelId || '',
+      narayani,
     }
     data.meta = {
       ...data.meta,

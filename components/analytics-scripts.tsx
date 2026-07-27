@@ -77,7 +77,7 @@ function readFromSiteData(data: {
   api_host?: string
 } {
   const analytics = data.siteConfig?.analytics
-  const block = analytics?.clearprompt || analytics?.narayani || {}
+  const block = analytics?.narayani || analytics?.clearprompt || {}
   const meta = data.meta
 
   const tid =

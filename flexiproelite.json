@@ -86,15 +86,6 @@
       "googleAnalyticsId": "",
       "facebookPixelId": "",
       "enabled": true,
-      "clearprompt": {
-        "provider": "agent-narayani",
-        "api_host": "https://analytics.clearprompt.dev",
-        "website_id": "33b60795-c3da-4860-ae16-5ecddaf4183b",
-        "template_id": "",
-        "organization_id": "",
-        "platform": "clearprompt",
-        "tracker_script": "https://analytics.clearprompt.dev/static/cp-tracker.js"
-      },
       "narayani": {
         "provider": "agent-narayani",
         "api_host": "https://analytics.clearprompt.dev",
@@ -213,7 +204,7 @@
         "buttonText": "Subscribe"
       },
       "bottomBar": {
-        "copyrightText": "\u00a9 {year} TechFlow Inc. All rights reserved.",
+        "copyrightText": "© {year} TechFlow Inc. All rights reserved.",
         "links": [
           {
             "label": "Privacy",
