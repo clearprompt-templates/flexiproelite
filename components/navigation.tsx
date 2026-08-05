@@ -1,40 +1,40 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Logo } from '@/components/logo'
-import { useSiteData } from '@/components/site-data-provider'
-import { useThemeColors } from '@/lib/use-theme-colors'
-import { getIcon } from '@/lib/icon-map'
-import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Logo } from '@/components/logo';
+import { useSiteData } from '@/components/site-data-provider';
+import { useThemeColors } from '@/lib/use-theme-colors';
+import { getIcon } from '@/lib/icon-map';
+import { UI_DEFAULTS } from '@/lib/site-ui-defaults';
 
 export function Navigation() {
-  const { data } = useSiteData()
-  const colors = useThemeColors()
-  const navigation = data.navigation.header
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  const { data } = useSiteData();
+  const colors = useThemeColors();
+  const navigation = data.navigation.header;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const MenuIcon = getIcon('menu')
-  const CloseIcon = getIcon('x')
-  const SparklesIcon = getIcon('sparkles')
+  const MenuIcon = getIcon('menu');
+  const CloseIcon = getIcon('x');
+  const SparklesIcon = getIcon('sparkles');
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  if (!navigation.enabled) return null
+  if (!navigation.enabled) return null;
 
   const positionClass =
     navigation.position === 'fixed'
       ? 'fixed'
       : navigation.position === 'sticky'
         ? 'sticky'
-        : 'relative'
+        : 'relative';
 
-  const logoHref = navigation.logoHref || '#home'
+  const logoHref = navigation.logoHref || '#home';
 
   return (
     <motion.header
@@ -183,5 +183,5 @@ export function Navigation() {
         </AnimatePresence>
       </nav>
     </motion.header>
-  )
+  );
 }

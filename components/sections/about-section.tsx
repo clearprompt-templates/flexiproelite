@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import { getIcon } from '@/lib/icon-map'
-import { useThemeColors } from '@/lib/use-theme-colors'
-import type { AboutContent } from '@/lib/site-data'
+import { motion } from 'framer-motion';
+import { getIcon } from '@/lib/icon-map';
+import { useThemeColors } from '@/lib/use-theme-colors';
+import type { AboutContent } from '@/lib/site-data';
 
 export function AboutSection({ content }: { content: AboutContent }) {
-  const colors = useThemeColors()
+  const colors = useThemeColors();
 
   const mission =
     typeof content.mission === 'string'
       ? { heading: 'Our Mission', text: content.mission, icon: 'target' }
-      : content.mission
+      : content.mission;
 
-  const MissionIcon = getIcon(mission?.icon || 'target')
+  const MissionIcon = getIcon(mission?.icon || 'target');
 
   return (
     <section id="about" className="section-padding bg-white relative overflow-hidden">
@@ -54,7 +54,9 @@ export function AboutSection({ content }: { content: AboutContent }) {
               </motion.div>
             )}
 
-            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">{content.heading}</h2>
+            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">
+              {content.heading}
+            </h2>
 
             <p className="text-lg mb-8 leading-relaxed" style={{ color: colors.subtext }}>
               {content.description}
@@ -92,7 +94,7 @@ export function AboutSection({ content }: { content: AboutContent }) {
 
             <div className="grid grid-cols-3 gap-4">
               {content.stats.map((stat, index) => {
-                const Icon = getIcon(stat.icon || 'users')
+                const Icon = getIcon(stat.icon || 'users');
                 return (
                   <motion.div
                     key={stat.id || stat.label}
@@ -109,7 +111,7 @@ export function AboutSection({ content }: { content: AboutContent }) {
                       {stat.label}
                     </div>
                   </motion.div>
-                )
+                );
               })}
             </div>
           </motion.div>
@@ -164,5 +166,5 @@ export function AboutSection({ content }: { content: AboutContent }) {
         </div>
       </div>
     </section>
-  )
+  );
 }

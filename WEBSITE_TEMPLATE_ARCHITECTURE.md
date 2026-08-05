@@ -52,10 +52,10 @@ Build a production-ready marketing site where:
 
 4. **Sandbox vs production API** is chosen in code (`lib/api-config.ts`) from that origin:
 
-   | Site origin hostname | API base |
-   |----------------------|----------|
+   | Site origin hostname                                | API base                              |
+   | --------------------------------------------------- | ------------------------------------- |
    | `localhost`, `127.0.0.1`, or starts with `sandbox-` | `https://api.sandbox.clearprompt.dev` |
-   | everything else | `https://api.clearprompt.dev` |
+   | everything else                                     | `https://api.clearprompt.dev`         |
 
    Paths (appended to the base):
    - templates: `/api/v1/website/templates/by-origin`
@@ -94,11 +94,11 @@ app/page.tsx
                 → <SitePage>          (render sections by order + type)
 ```
 
-| Source | Used at runtime? |
-|--------|------------------|
-| ClearPrompt API (`data.json_object`) via origin-based base URL | **Yes** |
-| Local `{sitename}.json` in repo | **No** (upload source only) |
-| `.env` | **No** for API/content — omit from the template |
+| Source                                                         | Used at runtime?                                |
+| -------------------------------------------------------------- | ----------------------------------------------- |
+| ClearPrompt API (`data.json_object`) via origin-based base URL | **Yes**                                         |
+| Local `{sitename}.json` in repo                                | **No** (upload source only)                     |
+| `.env`                                                         | **No** for API/content — omit from the template |
 
 ---
 
@@ -145,16 +145,16 @@ The reference JSON is `nova.json` in the project root — mirror its shape.
 
 ```json
 {
-  "meta": { },
+  "meta": {},
   "siteConfig": {
-    "brand": { },
-    "theme": { "colors": { }, "typography": { }, "spacing": { }, "borderRadius": { } },
-    "contact": { },
-    "seo": { },
+    "brand": {},
+    "theme": { "colors": {}, "typography": {}, "spacing": {}, "borderRadius": {} },
+    "contact": {},
+    "seo": {},
     "analytics": { "enabled": false }
   },
-  "navigation": { "header": { }, "footer": { } },
-  "pages": [ { "id": "home", "path": "/", "sections": [ ] } ]
+  "navigation": { "header": {}, "footer": {} },
+  "pages": [{ "id": "home", "path": "/", "sections": [] }]
 }
 ```
 
@@ -181,6 +181,7 @@ The reference JSON is `nova.json` in the project root — mirror its shape.
   "logo": { "type": "text", "width": 200, "height": 60, "textColor": "#3a5a40" }
 }
 ```
+
 `logo.type` can be `"text"` or `"image"` (`"image"` adds a `url`).
 
 ### `siteConfig.contact`, `seo`, `analytics`
@@ -212,6 +213,7 @@ The reference JSON is `nova.json` in the project root — mirror its shape.
   }
 }
 ```
+
 `{year}` in `copyrightText` is replaced at runtime with the current year.
 
 ### `pages[].sections[]`
@@ -222,7 +224,7 @@ The reference JSON is `nova.json` in the project root — mirror its shape.
   "type": "hero",
   "enabled": true,
   "order": 1,
-  "content": { }
+  "content": {}
 }
 ```
 
@@ -243,23 +245,23 @@ Theme colors live in `siteConfig.theme.colors`. `build-theme-css.ts` maps each J
 
 Semantic (map straight to shadcn/tailwind roles):
 
-| JSON key | CSS var |
-|----------|---------|
-| `background` | `--background` |
-| `foreground` / `text` | `--foreground` |
-| `card` / `cardForeground` | `--card` / `--card-foreground` |
-| `popover` / `popoverForeground` | `--popover` / `--popover-foreground` |
-| `primary` / `primaryForeground` | `--primary` / `--primary-foreground` |
+| JSON key                            | CSS var                                  |
+| ----------------------------------- | ---------------------------------------- |
+| `background`                        | `--background`                           |
+| `foreground` / `text`               | `--foreground`                           |
+| `card` / `cardForeground`           | `--card` / `--card-foreground`           |
+| `popover` / `popoverForeground`     | `--popover` / `--popover-foreground`     |
+| `primary` / `primaryForeground`     | `--primary` / `--primary-foreground`     |
 | `secondary` / `secondaryForeground` | `--secondary` / `--secondary-foreground` |
-| `muted` / `mutedForeground` | `--muted` / `--muted-foreground` |
-| `accent` / `accentForeground` | `--accent` / `--accent-foreground` |
-| `destructive` | `--destructive` |
-| `border` / `input` / `ring` | `--border` / `--input` / `--ring` |
+| `muted` / `mutedForeground`         | `--muted` / `--muted-foreground`         |
+| `accent` / `accentForeground`       | `--accent` / `--accent-foreground`       |
+| `destructive`                       | `--destructive`                          |
+| `border` / `input` / `ring`         | `--border` / `--input` / `--ring`        |
 
 Bespoke palette (template-specific accents used by this design):
 
-| JSON key | CSS var |
-|----------|---------|
+| JSON key                                           | CSS var                                                        |
+| -------------------------------------------------- | -------------------------------------------------------------- |
 | `canopy`, `moss`, `amber`, `mist`, `sand`, `night` | `--canopy`, `--moss`, `--amber`, `--mist`, `--sand`, `--night` |
 
 > Only keys present in `COLOR_VAR_MAP` are applied. To add a new token, add the key to the JSON **and** to `COLOR_VAR_MAP` in `build-theme-css.ts` **and** (if you want a Tailwind color class) to `@theme inline` in `globals.css`.
@@ -320,7 +322,7 @@ To restyle the site, an LLM edits only these color values.
 }
 ```
 
-- `fontFamily` / `headingFontFamily` — font **stacks**. These reference CSS variables (`--font-geist-sans`, `--font-fraunces`) defined by `next/font/google` in `lib/fonts.ts`. If you want a *new* font, add it to `lib/fonts.ts` first, then reference its variable here.
+- `fontFamily` / `headingFontFamily` — font **stacks**. These reference CSS variables (`--font-geist-sans`, `--font-fraunces`) defined by `next/font/google` in `lib/fonts.ts`. If you want a _new_ font, add it to `lib/fonts.ts` first, then reference its variable here.
 - `fontSize` — the reference **does** expose a small set of responsive sizes (`base`, `heading1`, `heading2`, `heading3`) as CSS variables (`--font-size-*`). Keep this list short and prefer `clamp()` so LLM edits stay layout-safe. Do **not** add per-element font sizes here — all other sizing stays in Tailwind classes.
 
 ### Also in JSON
@@ -329,6 +331,7 @@ To restyle the site, an LLM edits only these color values.
 "spacing": { "sectionPadding": "7rem", "containerMaxWidth": "80rem" },
 "borderRadius": { "small": "0.45rem", "medium": "0.6rem", "large": "1rem" }
 ```
+
 These map to `--section-padding`, `--container-max-width`, `--radius-sm/md/lg`.
 
 ### Wiring
@@ -490,24 +493,24 @@ Before finishing, verify:
 
 ## Reference files (this repo)
 
-| File | Purpose |
-|------|---------|
-| `nova.json` / `{sitename}.json` | JSON shape and section content |
-| `lib/api-config.ts` | Sandbox/prod API bases + URL helpers (no `.env`) |
-| `lib/site-data.ts` | Types, API fetch, origin resolver, section helpers |
-| `lib/build-theme-css.ts` | JSON theme → CSS variables (`COLOR_VAR_MAP`) |
-| `lib/fonts.ts` | `next/font/google` font variables |
-| `lib/site-ui-defaults.ts` | Non-JSON UI/animation defaults |
-| `lib/content-library.ts` | Button/animation class helpers |
-| `components/site-bootstrap.tsx` | Fetch, loading/error, apply document meta |
-| `components/site-data-provider.tsx` | React context |
-| `components/theme-styles.tsx` | Runtime `<style>` injection |
-| `components/analytics-scripts.tsx` | GA/FB via `next/script` |
-| `components/site-page.tsx` | Section rendering by `type`/`order`/`enabled` |
-| `app/layout.tsx`, `app/page.tsx` | Entry (replaces `index.html`/`App.tsx`) |
-| `app/globals.css` | Tailwind v4 tokens + fallback `:root` + keyframes |
-| `next.config.mjs` | Static export config |
-| `deploy-sites.sh` | Build + upload `out/` to S3 |
+| File                                | Purpose                                            |
+| ----------------------------------- | -------------------------------------------------- |
+| `nova.json` / `{sitename}.json`     | JSON shape and section content                     |
+| `lib/api-config.ts`                 | Sandbox/prod API bases + URL helpers (no `.env`)   |
+| `lib/site-data.ts`                  | Types, API fetch, origin resolver, section helpers |
+| `lib/build-theme-css.ts`            | JSON theme → CSS variables (`COLOR_VAR_MAP`)       |
+| `lib/fonts.ts`                      | `next/font/google` font variables                  |
+| `lib/site-ui-defaults.ts`           | Non-JSON UI/animation defaults                     |
+| `lib/content-library.ts`            | Button/animation class helpers                     |
+| `components/site-bootstrap.tsx`     | Fetch, loading/error, apply document meta          |
+| `components/site-data-provider.tsx` | React context                                      |
+| `components/theme-styles.tsx`       | Runtime `<style>` injection                        |
+| `components/analytics-scripts.tsx`  | GA/FB via `next/script`                            |
+| `components/site-page.tsx`          | Section rendering by `type`/`order`/`enabled`      |
+| `app/layout.tsx`, `app/page.tsx`    | Entry (replaces `index.html`/`App.tsx`)            |
+| `app/globals.css`                   | Tailwind v4 tokens + fallback `:root` + keyframes  |
+| `next.config.mjs`                   | Static export config                               |
+| `deploy-sites.sh`                   | Build + upload `out/` to S3                        |
 
 ---
 

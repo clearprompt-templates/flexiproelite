@@ -1,82 +1,82 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { getIcon } from '@/lib/icon-map'
-import { useThemeColors } from '@/lib/use-theme-colors'
-import { getContactApiUrl } from '@/lib/api-config'
-import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
-import type { ContactContent } from '@/lib/site-data'
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { getIcon } from '@/lib/icon-map';
+import { useThemeColors } from '@/lib/use-theme-colors';
+import { getContactApiUrl } from '@/lib/api-config';
+import { UI_DEFAULTS } from '@/lib/site-ui-defaults';
+import type { ContactContent } from '@/lib/site-data';
 
 function buildContactPayload(
   fields: Array<{ name: string }> | undefined,
-  data: Record<string, string>,
+  data: Record<string, string>
 ): Record<string, string> {
-  const payload: Record<string, string> = {}
+  const payload: Record<string, string> = {};
   for (const field of fields ?? []) {
-    const v = (data[field.name] ?? '').trim()
-    if (v) payload[field.name] = v
+    const v = (data[field.name] ?? '').trim();
+    if (v) payload[field.name] = v;
   }
-  return payload
+  return payload;
 }
 
 function resolveColor(
   color: ContactContent['contactInfo'][0]['color'],
   fallbackFrom: string,
-  fallbackTo: string,
+  fallbackTo: string
 ) {
   if (color && typeof color === 'object' && 'from' in color) {
-    return { from: color.from, to: color.to }
+    return { from: color.from, to: color.to };
   }
-  return { from: fallbackFrom, to: fallbackTo }
+  return { from: fallbackFrom, to: fallbackTo };
 }
 
 export function ContactSection({ content }: { content: ContactContent }) {
-  const colors = useThemeColors()
-  const [formData, setFormData] = useState<Record<string, string>>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
+  const colors = useThemeColors();
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const MessageIcon = getIcon('messageCircle')
-  const formEnabled = content.form?.enabled
+  const MessageIcon = getIcon('messageCircle');
+  const formEnabled = content.form?.enabled;
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formEnabled) return
-    setSubmitError(null)
-    setIsSubmitting(true)
-    const payload = buildContactPayload(content.form?.fields, formData)
+    e.preventDefault();
+    if (!formEnabled) return;
+    setSubmitError(null);
+    setIsSubmitting(true);
+    const payload = buildContactPayload(content.form?.fields, formData);
 
     try {
       const res = await fetch(getContactApiUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      })
+      });
       if (!res.ok) {
-        const text = await res.text()
-        let detail = text
+        const text = await res.text();
+        let detail = text;
         try {
-          const json = JSON.parse(text) as { message?: string; error?: string }
-          detail = json.message || json.error || text
+          const json = JSON.parse(text) as { message?: string; error?: string };
+          detail = json.message || json.error || text;
         } catch {
           /* use raw text */
         }
-        throw new Error(detail || `Request failed (${res.status})`)
+        throw new Error(detail || `Request failed (${res.status})`);
       }
-      setSubmitted(true)
-      setFormData({})
+      setSubmitted(true);
+      setFormData({});
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : UI_DEFAULTS.contactErrorFallback)
+      setSubmitError(err instanceof Error ? err.message : UI_DEFAULTS.contactErrorFallback);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const emailHref =
     content.contactInfo.find((item) => item.type === 'email')?.href ||
-    `mailto:${content.contactInfo.find((item) => item.type === 'email')?.value || ''}`
+    `mailto:${content.contactInfo.find((item) => item.type === 'email')?.value || ''}`;
 
   return (
     <section
@@ -116,16 +116,21 @@ export function ContactSection({ content }: { content: ContactContent }) {
               {content.badge}
             </motion.div>
           )}
-          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">{content.heading}</h2>
-          <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: colors.subtext }}>
+          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">
+            {content.heading}
+          </h2>
+          <p
+            className="text-xl max-w-3xl mx-auto leading-relaxed"
+            style={{ color: colors.subtext }}
+          >
             {content.description}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {content.contactInfo.map((item, index) => {
-            const Icon = getIcon(item.icon)
-            const itemColor = resolveColor(item.color, colors.primary, colors.secondary)
+            const Icon = getIcon(item.icon);
+            const itemColor = resolveColor(item.color, colors.primary, colors.secondary);
             return (
               <motion.div
                 key={item.id}
@@ -170,7 +175,7 @@ export function ContactSection({ content }: { content: ContactContent }) {
                   )}
                 </motion.div>
               </motion.div>
-            )
+            );
           })}
         </div>
 
@@ -245,9 +250,7 @@ export function ContactSection({ content }: { content: ContactContent }) {
                     background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})`,
                   }}
                 >
-                  {isSubmitting
-                    ? UI_DEFAULTS.contactSubmittingLabel
-                    : content.form.submitLabel}
+                  {isSubmitting ? UI_DEFAULTS.contactSubmittingLabel : content.form.submitLabel}
                 </motion.button>
               </form>
             )}
@@ -282,8 +285,8 @@ export function ContactSection({ content }: { content: ContactContent }) {
                 >
                   {content.cta.button.text || content.cta.button.label}
                   {(() => {
-                    const CTAIcon = getIcon(content.cta.button.icon || 'send')
-                    return <CTAIcon size={20} />
+                    const CTAIcon = getIcon(content.cta.button.icon || 'send');
+                    return <CTAIcon size={20} />;
                   })()}
                 </motion.a>
               </div>
@@ -292,5 +295,5 @@ export function ContactSection({ content }: { content: ContactContent }) {
         )}
       </div>
     </section>
-  )
+  );
 }

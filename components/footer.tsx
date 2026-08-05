@@ -1,35 +1,35 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import { useSiteData } from '@/components/site-data-provider'
-import { useThemeColors } from '@/lib/use-theme-colors'
-import { getIcon } from '@/lib/icon-map'
-import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
+import { motion } from 'framer-motion';
+import { useSiteData } from '@/components/site-data-provider';
+import { useThemeColors } from '@/lib/use-theme-colors';
+import { getIcon } from '@/lib/icon-map';
+import { UI_DEFAULTS } from '@/lib/site-ui-defaults';
 
 export function Footer() {
-  const { data } = useSiteData()
-  const colors = useThemeColors()
-  const navigation = data.navigation.footer
-  const brandName = data.siteConfig.brand.name
-  const currentYear = new Date().getFullYear()
-  const HeartIcon = getIcon('heart')
-  const ArrowUpIcon = getIcon('arrowUp')
+  const { data } = useSiteData();
+  const colors = useThemeColors();
+  const navigation = data.navigation.footer;
+  const brandName = data.siteConfig.brand.name;
+  const currentYear = new Date().getFullYear();
+  const HeartIcon = getIcon('heart');
+  const ArrowUpIcon = getIcon('arrowUp');
 
-  if (!navigation.enabled) return null
+  if (!navigation.enabled) return null;
 
-  const brandColumn = navigation.columns.find((col) => col.type === 'brand')
-  const linksColumn = navigation.columns.find((col) => col.type === 'links')
-  const socialColumn = navigation.columns.find((col) => col.type === 'social')
+  const brandColumn = navigation.columns.find((col) => col.type === 'brand');
+  const linksColumn = navigation.columns.find((col) => col.type === 'links');
+  const socialColumn = navigation.columns.find((col) => col.type === 'social');
 
-  const copyrightText = navigation.bottomBar.copyrightText.replace('{year}', String(currentYear))
+  const copyrightText = navigation.bottomBar.copyrightText.replace('{year}', String(currentYear));
 
   const bottomLinks = (navigation.bottomBar.links || []).map((link) =>
-    typeof link === 'string' ? { label: link, href: '#' } : link,
-  )
+    typeof link === 'string' ? { label: link, href: '#' } : link
+  );
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
@@ -132,7 +132,7 @@ export function Footer() {
                 <h4 className="text-lg font-bold mb-6 text-white">{socialColumn.heading}</h4>
                 <div className="flex flex-wrap gap-3">
                   {socialColumn.socialMedia.map((social) => {
-                    const Icon = getIcon(social.icon || social.platform)
+                    const Icon = getIcon(social.icon || social.platform);
                     return (
                       <motion.a
                         key={social.platform}
@@ -146,7 +146,7 @@ export function Footer() {
                       >
                         <Icon size={20} className="text-gray-400" />
                       </motion.a>
-                    )
+                    );
                   })}
                 </div>
 
@@ -211,5 +211,5 @@ export function Footer() {
         />
       </div>
     </footer>
-  )
+  );
 }

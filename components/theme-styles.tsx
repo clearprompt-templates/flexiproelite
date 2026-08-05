@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import type { SiteData } from '@/lib/site-data'
-import { buildThemeCss } from '@/lib/build-theme-css'
-import { normalizeThemeColors } from '@/lib/theme-colors'
+import type { SiteData } from '@/lib/site-data';
+import { buildThemeCss } from '@/lib/build-theme-css';
+import { normalizeThemeColors } from '@/lib/theme-colors';
 
 export function ThemeStyles({ data }: { data: SiteData }) {
-  const colors = normalizeThemeColors(data.siteConfig.theme.colors)
+  const colors = normalizeThemeColors(data.siteConfig.theme.colors);
   const enriched: SiteData = {
     ...data,
     siteConfig: {
@@ -23,7 +23,7 @@ export function ThemeStyles({ data }: { data: SiteData }) {
         },
       },
     },
-  }
-  const css = buildThemeCss(enriched)
-  return <style dangerouslySetInnerHTML={{ __html: css }} />
+  };
+  const css = buildThemeCss(enriched);
+  return <style dangerouslySetInnerHTML={{ __html: css }} />;
 }

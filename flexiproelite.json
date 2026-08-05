@@ -4,9 +4,7 @@
     "lastUpdated": "2026-07-24",
     "siteId": "flexiproelite",
     "language": "en",
-    "locales": [
-      "en"
-    ],
+    "locales": ["en"],
     "title": "TechFlow - Innovate Your Workflow",
     "description": "Empowering businesses with innovative technology solutions"
   },
@@ -72,12 +70,7 @@
       "locationShort": "Tech Valley, CA"
     },
     "seo": {
-      "keywords": [
-        "technology",
-        "workflow",
-        "innovation",
-        "business solutions"
-      ],
+      "keywords": ["technology", "workflow", "innovation", "business solutions"],
       "author": "TechFlow Inc.",
       "ogImage": "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1920",
       "favicon": "/icon.svg"
@@ -325,10 +318,7 @@
                   "text": "Learn More",
                   "href": "#"
                 },
-                "tags": [
-                  "popular",
-                  "cloud"
-                ],
+                "tags": ["popular", "cloud"],
                 "featured": false,
                 "metadata": {
                   "value": "$29.99/mo"
@@ -346,10 +336,7 @@
                   "text": "Learn More",
                   "href": "#"
                 },
-                "tags": [
-                  "popular",
-                  "analytics"
-                ],
+                "tags": ["popular", "analytics"],
                 "featured": true,
                 "metadata": {
                   "value": "$49.99/mo"
@@ -367,9 +354,7 @@
                   "text": "Learn More",
                   "href": "#"
                 },
-                "tags": [
-                  "communication"
-                ],
+                "tags": ["communication"],
                 "featured": false,
                 "metadata": {
                   "value": "$19.99/mo"
@@ -387,10 +372,7 @@
                   "text": "Learn More",
                   "href": "#"
                 },
-                "tags": [
-                  "ai",
-                  "automation"
-                ],
+                "tags": ["ai", "automation"],
                 "featured": false,
                 "metadata": {
                   "value": "$79.99/mo"
@@ -408,9 +390,7 @@
                   "text": "Learn More",
                   "href": "#"
                 },
-                "tags": [
-                  "security"
-                ],
+                "tags": ["security"],
                 "featured": false,
                 "metadata": {
                   "value": "$39.99/mo"
@@ -428,9 +408,7 @@
                   "text": "Learn More",
                   "href": "#"
                 },
-                "tags": [
-                  "analytics"
-                ],
+                "tags": ["analytics"],
                 "featured": false,
                 "metadata": {
                   "value": "$59.99/mo"

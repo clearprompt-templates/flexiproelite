@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import { getIcon } from '@/lib/icon-map'
-import { useThemeColors } from '@/lib/use-theme-colors'
-import type { HeroContent } from '@/lib/site-data'
+import { motion } from 'framer-motion';
+import { getIcon } from '@/lib/icon-map';
+import { useThemeColors } from '@/lib/use-theme-colors';
+import type { HeroContent } from '@/lib/site-data';
 
 export function HeroSection({ content }: { content: HeroContent }) {
-  const colors = useThemeColors()
-  const settings = content.settings ?? {}
-  const headingText = content.heading?.text || content.headline || ''
-  const titleWords = headingText.split(' ')
-  const splitAt = content.heading?.splitAt ?? 3
-  const firstPart = titleWords.slice(0, splitAt).join(' ')
-  const secondPart = titleWords.slice(splitAt).join(' ')
-  const ArrowRight = getIcon('arrowRight')
-  const SparklesIcon = getIcon(content.badge?.icon || 'sparkles')
+  const colors = useThemeColors();
+  const settings = content.settings ?? {};
+  const headingText = content.heading?.text || content.headline || '';
+  const titleWords = headingText.split(' ');
+  const splitAt = content.heading?.splitAt ?? 3;
+  const firstPart = titleWords.slice(0, splitAt).join(' ');
+  const secondPart = titleWords.slice(splitAt).join(' ');
+  const ArrowRight = getIcon('arrowRight');
+  const SparklesIcon = getIcon(content.badge?.icon || 'sparkles');
 
   return (
     <section
@@ -81,7 +81,10 @@ export function HeroSection({ content }: { content: HeroContent }) {
               >
                 <SparklesIcon
                   size={16}
-                  style={{ color: '#ffffff', filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))' }}
+                  style={{
+                    color: '#ffffff',
+                    filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))',
+                  }}
                 />
                 {content.badge.text}
               </span>
@@ -154,7 +157,7 @@ export function HeroSection({ content }: { content: HeroContent }) {
             className="flex flex-wrap gap-6 justify-center"
           >
             {content.features.map((feature, index) => {
-              const Icon = getIcon(feature.icon)
+              const Icon = getIcon(feature.icon);
               return (
                 <motion.div
                   key={feature.text}
@@ -172,7 +175,7 @@ export function HeroSection({ content }: { content: HeroContent }) {
                   <Icon size={18} style={{ color: '#ffffff' }} />
                   <span className="text-white font-semibold">{feature.text}</span>
                 </motion.div>
-              )
+              );
             })}
           </motion.div>
         )}
@@ -204,5 +207,5 @@ export function HeroSection({ content }: { content: HeroContent }) {
         </motion.div>
       )}
     </section>
-  )
+  );
 }

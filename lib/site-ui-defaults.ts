@@ -14,4 +14,4 @@ export const UI_DEFAULTS = {
   contactSuccessDescription: "We'll get back to you shortly.",
   contactErrorFallback: 'Something went wrong. Please try again.',
   scrollToTopAriaLabel: 'Scroll to top',
-}
+};

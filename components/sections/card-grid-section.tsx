@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import { getIcon } from '@/lib/icon-map'
-import { useThemeColors } from '@/lib/use-theme-colors'
-import type { CardGridContent } from '@/lib/site-data'
+import { motion } from 'framer-motion';
+import { getIcon } from '@/lib/icon-map';
+import { useThemeColors } from '@/lib/use-theme-colors';
+import type { CardGridContent } from '@/lib/site-data';
 
 export function CardGridSection({ content }: { content: CardGridContent }) {
-  const colors = useThemeColors()
-  const settings = content.settings ?? {}
-  const ArrowRight = getIcon('arrowRight')
-  const StarIcon = getIcon('star')
+  const colors = useThemeColors();
+  const settings = content.settings ?? {};
+  const ArrowRight = getIcon('arrowRight');
+  const StarIcon = getIcon('star');
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -17,7 +17,7 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
       opacity: 1,
       transition: { staggerChildren: 0.12 },
     },
-  }
+  };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 40 },
@@ -26,7 +26,7 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
       y: 0,
       transition: { duration: 0.6 },
     },
-  }
+  };
 
   return (
     <section id="cards" className="section-padding bg-gradient-to-b from-gray-50 to-white">
@@ -57,9 +57,14 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
               </span>
             </motion.div>
           )}
-          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">{content.heading}</h2>
+          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">
+            {content.heading}
+          </h2>
           {content.description && (
-            <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: colors.subtext }}>
+            <p
+              className="text-xl max-w-3xl mx-auto leading-relaxed"
+              style={{ color: colors.subtext }}
+            >
               {content.description}
             </p>
           )}
@@ -73,7 +78,7 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {(content.items || []).map((card, index) => {
-            const isFeatured = card.featured || index === settings.featuredIndex
+            const isFeatured = card.featured || index === settings.featuredIndex;
             return (
               <motion.div key={card.id} variants={itemVariants} className="group relative">
                 <motion.div
@@ -119,7 +124,10 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                       </p>
                     )}
 
-                    <p className="mb-4 leading-relaxed line-clamp-3" style={{ color: colors.subtext }}>
+                    <p
+                      className="mb-4 leading-relaxed line-clamp-3"
+                      style={{ color: colors.subtext }}
+                    >
                       {card.description}
                     </p>
 
@@ -168,7 +176,7 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                   </div>
                 </motion.div>
               </motion.div>
-            )
+            );
           })}
         </motion.div>
 
@@ -200,5 +208,5 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
         )}
       </div>
     </section>
-  )
+  );
 }

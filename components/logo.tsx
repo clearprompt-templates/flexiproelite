@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import { useSiteData } from '@/components/site-data-provider'
+import { useSiteData } from '@/components/site-data-provider';
 
 interface LogoProps {
-  className?: string
-  textColor?: string
+  className?: string;
+  textColor?: string;
 }
 
 export function Logo({ className = '', textColor }: LogoProps) {
-  const { data } = useSiteData()
-  const { brand } = data.siteConfig
+  const { data } = useSiteData();
+  const { brand } = data.siteConfig;
 
   if (brand.logoUrl || brand.logo?.type === 'image') {
-    const url = brand.logoUrl || brand.logo.url
+    const url = brand.logoUrl || brand.logo.url;
     if (url) {
       return (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt={`${brand.name} Logo`} className={className} />
-      )
+      );
     }
   }
 
@@ -29,9 +29,9 @@ export function Logo({ className = '', textColor }: LogoProps) {
       iconPrimaryColor = '#6366f1',
       iconSecondaryColor = '#8b5cf6',
       iconStrokeColor = '#ffffff',
-    } = brand.logo
+    } = brand.logo;
 
-    const fill = textColor ?? logoTextColor
+    const fill = textColor ?? logoTextColor;
 
     if (brand.logo.type === 'svg') {
       return (
@@ -75,9 +75,9 @@ export function Logo({ className = '', textColor }: LogoProps) {
             {brand.name}
           </text>
         </svg>
-      )
+      );
     }
   }
 
-  return <span className={`text-2xl font-bold ${className}`}>{brand.name}</span>
+  return <span className={`text-2xl font-bold ${className}`}>{brand.name}</span>;
 }

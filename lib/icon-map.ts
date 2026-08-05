@@ -23,7 +23,7 @@ import {
   X,
   Zap,
   type LucideIcon,
-} from 'lucide-react'
+} from 'lucide-react';
 
 const ICON_MAP: Record<string, LucideIcon> = {
   arrowRight: ArrowRight,
@@ -56,8 +56,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   x: X,
   zap: Zap,
   Zap,
-}
+};
 
 export function getIcon(name: string, fallback: LucideIcon = Sparkles): LucideIcon {
-  return ICON_MAP[name] ?? ICON_MAP[name.toLowerCase()] ?? fallback
+  return ICON_MAP[name] ?? ICON_MAP[name.toLowerCase()] ?? fallback;
 }
