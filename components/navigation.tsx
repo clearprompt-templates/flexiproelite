@@ -18,7 +18,6 @@ export function Navigation() {
 
   const MenuIcon = getIcon('menu')
   const CloseIcon = getIcon('x')
-  const SparklesIcon = getIcon('sparkles')
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -74,20 +73,10 @@ export function Navigation() {
             className="flex items-center space-x-3 group"
             onClick={(e) => handleNavClick(e)}
           >
-            <div className="relative">
-              <Logo
-                className="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                textColor={scrolled ? colors.text : '#ffffff'}
-              />
-              <motion.div
-                className="absolute -top-1 -right-1"
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-                data-cp-decorative=""
-              >
-                <SparklesIcon size={16} style={{ color: colors.secondary }} data-cp-decorative="" />
-              </motion.div>
-            </div>
+            <Logo
+              className="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              textColor={scrolled ? colors.text : '#ffffff'}
+            />
           </motion.a>
 
           <div className="hidden md:flex items-center space-x-1">

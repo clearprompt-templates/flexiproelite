@@ -37,7 +37,6 @@ export function ContactSection({
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const MessageIcon = getIcon('messageCircle')
   const formEnabled = content.form?.enabled
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -98,26 +97,6 @@ export function ContactSection({
           transition={{ duration: 0.7 }}
           className="text-center mb-20"
         >
-          {content.badge && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
-              style={{
-                background: `linear-gradient(to right, ${colors.primary}1a, ${colors.secondary}1a)`,
-                color: colors.primary,
-              }}
-            >
-              <MessageIcon size={16} data-cp-decorative="" />
-              <span
-                {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'badge'), 'text')}
-              >
-                {content.badge}
-              </span>
-            </motion.div>
-          )}
           <h2
             className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient"
             {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'heading'), 'text')}
@@ -268,10 +247,10 @@ export function ContactSection({
                 className="rounded-3xl bg-white p-8 md:p-10 shadow-xl border border-gray-100 space-y-5"
               >
                 {content.form.fields.map((field, fieldIndex) => (
-                  <div key={field.name}>
-                    <label
-                      htmlFor={field.name}
-                      className="block text-sm font-semibold mb-2"
+                  <div key={field.name} className="relative">
+                    {/* Span (not htmlFor label) so Direct edit can select the label without focusing the input */}
+                    <span
+                      className="relative z-[5] mb-2 block text-sm font-semibold"
                       style={{ color: colors.text }}
                       {...fieldAttrs(
                         fieldPath(
@@ -287,7 +266,7 @@ export function ContactSection({
                       )}
                     >
                       {field.label}
-                    </label>
+                    </span>
                     {field.type === 'textarea' ? (
                       <textarea
                         id={field.name}
@@ -295,6 +274,7 @@ export function ContactSection({
                         required={field.required}
                         rows={4}
                         placeholder={field.placeholder}
+                        aria-label={field.label}
                         className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                       />
                     ) : (
@@ -304,6 +284,7 @@ export function ContactSection({
                         type={field.type}
                         required={field.required}
                         placeholder={field.placeholder}
+                        aria-label={field.label}
                         className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                       />
                     )}

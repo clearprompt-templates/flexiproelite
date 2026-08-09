@@ -244,22 +244,26 @@ export function Footer() {
                         aria-label={social.label || social.platform}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         whileTap={{ scale: 0.9 }}
-                        className="w-12 h-12 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center transition-all hover:border-[var(--primary-color)]"
+                        className="relative w-12 h-12 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center transition-all hover:border-[var(--primary-color)]"
                         onClick={handleHashClick}
-                        {...globalFieldAttrs(
-                          jsonPath(
-                            'navigation',
-                            'footer',
-                            'columns',
-                            socialColIdx,
-                            'socialMedia',
-                            socialIndex,
-                            'url',
-                          ),
-                          'text',
-                        )}
                       >
-                        <Icon size={20} className="text-gray-400" data-cp-decorative="" />
+                        {/* Dedicated URL hit target — sidebar edits the profile link, not an image */}
+                        <span
+                          className="absolute inset-0 z-[1]"
+                          {...globalFieldAttrs(
+                            jsonPath(
+                              'navigation',
+                              'footer',
+                              'columns',
+                              socialColIdx,
+                              'socialMedia',
+                              socialIndex,
+                              'url',
+                            ),
+                            'text',
+                          )}
+                        />
+                        <Icon size={20} className="relative z-0 text-gray-400" data-cp-decorative="" />
                       </motion.a>
                     )
                   })}

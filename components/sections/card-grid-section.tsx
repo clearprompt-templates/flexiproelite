@@ -56,26 +56,6 @@ export function CardGridSection({
           transition={{ duration: 0.7 }}
           className="text-center mb-20"
         >
-          {content.badge && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="inline-block mb-4"
-            >
-              <span
-                className="px-4 py-2 rounded-full text-sm font-semibold"
-                style={{
-                  background: `linear-gradient(to right, ${colors.primary}1a, ${colors.secondary}1a)`,
-                  color: colors.primary,
-                }}
-                {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'badge'), 'text')}
-              >
-                {content.badge}
-              </span>
-            </motion.div>
-          )}
           <h2
             className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient"
             {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'heading'), 'text')}

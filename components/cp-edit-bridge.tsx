@@ -44,6 +44,15 @@ html.cp-edit-mode form select:not([data-cp-path]) {
   pointer-events: none;
 }
 
+/* Form field labels must remain tappable in Direct edit */
+html.cp-edit-mode form label[data-cp-path],
+html.cp-edit-mode form span[data-cp-path] {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 5;
+  cursor: pointer !important;
+}
+
 .cp-edit-ring {
   position: absolute;
   pointer-events: none;

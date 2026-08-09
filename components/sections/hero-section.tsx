@@ -26,7 +26,6 @@ export function HeroSection({
   const firstPart = titleWords.slice(0, splitAt).join(' ')
   const secondPart = titleWords.slice(splitAt).join(' ')
   const ArrowRight = getIcon('arrowRight')
-  const SparklesIcon = getIcon(content.badge?.icon || 'sparkles')
 
   const primaryCtaKey = content.cta.primary.text ? 'text' : 'label'
   const secondaryCtaKey = content.cta.secondary?.text ? 'text' : 'label'
@@ -46,39 +45,46 @@ export function HeroSection({
       }}
       {...sectionAttrs(edit)}
     >
-      {content.backgroundImage?.url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={content.backgroundImage.url}
-          alt={content.backgroundImage.alt || ''}
-          data-cp-bg-image=""
-          className="absolute inset-0 h-full w-full object-cover"
-          {...fieldAttrs(
-            fieldPath(pageIndex, sectionIndex, 'content', 'backgroundImage', 'url'),
-            'image',
-          )}
-        />
-      )}
+      {/* Background image hit target — overlays stay decorative so Direct edit can select the photo */}
+      <div
+        className="absolute inset-0 z-0"
+        {...fieldAttrs(
+          fieldPath(pageIndex, sectionIndex, 'content', 'backgroundImage', 'url'),
+          'image',
+        )}
+      >
+        {content.backgroundImage?.url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={content.backgroundImage.url}
+            alt={content.backgroundImage.alt || ''}
+            className="pointer-events-none h-full w-full object-cover"
+            data-cp-decorative=""
+          />
+        ) : (
+          <div className="h-full w-full bg-gray-900" data-cp-decorative="" />
+        )}
+      </div>
 
       {settings.overlay !== false && (
         <>
           <div
-            className="absolute inset-0"
+            className="pointer-events-none absolute inset-0 z-[1]"
             style={{
               background: `linear-gradient(135deg, ${colors.primary}dd 0%, ${colors.secondary}bb 50%, ${colors.primary}dd 100%)`,
               opacity: settings.overlayOpacity ?? 0.85,
             }}
             data-cp-decorative=""
           />
-          <div className="absolute inset-0 bg-black/50" data-cp-decorative="" />
+          <div className="pointer-events-none absolute inset-0 z-[1] bg-black/50" data-cp-decorative="" />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/20 to-transparent"
             data-cp-decorative=""
           />
         </>
       )}
 
-      <div className="absolute inset-0 overflow-hidden" data-cp-decorative="">
+      <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden" data-cp-decorative="">
         <motion.div
           className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl"
           style={{ backgroundColor: `${colors.primary}33` }}
@@ -96,38 +102,6 @@ export function HeroSection({
       </div>
 
       <div className="container mx-auto container-padding py-32 px-4 text-center relative z-10">
-        {content.badge?.visible !== false && content.badge?.text && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 inline-flex"
-          >
-            <div
-              className="px-6 py-2 rounded-full border"
-              style={{
-                background: 'rgba(0, 0, 0, 0.5)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                borderColor: 'rgba(255, 255, 255, 0.3)',
-              }}
-            >
-              <span
-                className="text-white text-sm font-semibold flex items-center gap-2"
-                style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' }}
-                {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'badge', 'text'), 'text')}
-              >
-                <SparklesIcon
-                  size={16}
-                  style={{ color: '#ffffff', filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))' }}
-                  data-cp-decorative=""
-                />
-                {content.badge.text}
-              </span>
-            </div>
-          </motion.div>
-        )}
-
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
