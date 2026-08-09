@@ -4,9 +4,18 @@ import { motion } from 'framer-motion'
 import { getIcon } from '@/lib/icon-map'
 import { useThemeColors } from '@/lib/use-theme-colors'
 import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
+import type { SectionEditContext } from '@/lib/cp-edit'
+import { fieldAttrs, fieldPath, sectionAttrs, shouldBlockPreviewNavigation } from '@/lib/cp-edit'
 import type { CardGridContent } from '@/lib/site-data'
 
-export function CardGridSection({ content }: { content: CardGridContent }) {
+export function CardGridSection({
+  edit,
+  content,
+}: {
+  edit: SectionEditContext
+  content: CardGridContent
+}) {
+  const { pageIndex, sectionIndex } = edit
   const colors = useThemeColors()
   const settings = content.settings ?? {}
   const ArrowRight = getIcon('arrowRight')
@@ -29,10 +38,15 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
     },
   }
 
+  const handleCtaClick = (e: React.MouseEvent) => {
+    if (shouldBlockPreviewNavigation()) e.preventDefault()
+  }
+
   return (
     <section
       id={content.sectionId}
       className="section-padding bg-gradient-to-b from-gray-50 to-white"
+      {...sectionAttrs(edit)}
     >
       <div className="container mx-auto container-padding">
         <motion.div
@@ -56,14 +70,27 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                   background: `linear-gradient(to right, ${colors.primary}1a, ${colors.secondary}1a)`,
                   color: colors.primary,
                 }}
+                {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'badge'), 'text')}
               >
                 {content.badge}
               </span>
             </motion.div>
           )}
-          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">{content.heading}</h2>
+          <h2
+            className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient"
+            {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'heading'), 'text')}
+          >
+            {content.heading}
+          </h2>
           {content.description && (
-            <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: colors.subtext }}>
+            <p
+              className="text-xl max-w-3xl mx-auto leading-relaxed"
+              style={{ color: colors.subtext }}
+              {...fieldAttrs(
+                fieldPath(pageIndex, sectionIndex, 'content', 'description'),
+                'textarea',
+              )}
+            >
               {content.description}
             </p>
           )}
@@ -78,6 +105,7 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
         >
           {(content.items || []).map((card, index) => {
             const isFeatured = card.featured || index === settings.featuredIndex
+            const ctaKey = card.cta?.text ? 'text' : 'label'
             return (
               <motion.div key={card.id} variants={itemVariants} className="group relative">
                 <motion.div
@@ -93,8 +121,21 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                           background: `linear-gradient(to right, ${colors.secondary}, ${colors.primary})`,
                         }}
                       >
-                        <StarIcon size={12} fill="currentColor" />
-                        {content.labels?.featuredBadge || UI_DEFAULTS.featuredBadgeLabel}
+                        <StarIcon size={12} fill="currentColor" data-cp-decorative="" />
+                        <span
+                          {...fieldAttrs(
+                            fieldPath(
+                              pageIndex,
+                              sectionIndex,
+                              'content',
+                              'labels',
+                              'featuredBadge',
+                            ),
+                            'text',
+                          )}
+                        >
+                          {content.labels?.featuredBadge || UI_DEFAULTS.featuredBadgeLabel}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -107,36 +148,98 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                         className="w-full h-full object-cover"
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.4 }}
+                        {...fieldAttrs(
+                          fieldPath(
+                            pageIndex,
+                            sectionIndex,
+                            'content',
+                            'items',
+                            index,
+                            'media',
+                            'url',
+                          ),
+                          'image',
+                        )}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div
+                        className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                        data-cp-decorative=""
+                      />
                     </div>
                   )}
 
                   <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-2xl font-bold mb-3" style={{ color: colors.text }}>
+                    <h3
+                      className="text-2xl font-bold mb-3"
+                      style={{ color: colors.text }}
+                      {...fieldAttrs(
+                        fieldPath(pageIndex, sectionIndex, 'content', 'items', index, 'title'),
+                        'text',
+                      )}
+                    >
                       {card.title}
                     </h3>
 
                     {card.subtitle && (
-                      <p className="text-sm mb-2 font-medium" style={{ color: colors.muted }}>
+                      <p
+                        className="text-sm mb-2 font-medium"
+                        style={{ color: colors.muted }}
+                        {...fieldAttrs(
+                          fieldPath(
+                            pageIndex,
+                            sectionIndex,
+                            'content',
+                            'items',
+                            index,
+                            'subtitle',
+                          ),
+                          'text',
+                        )}
+                      >
                         {card.subtitle}
                       </p>
                     )}
 
-                    <p className="mb-4 leading-relaxed line-clamp-3" style={{ color: colors.subtext }}>
+                    <p
+                      className="mb-4 leading-relaxed line-clamp-3"
+                      style={{ color: colors.subtext }}
+                      {...fieldAttrs(
+                        fieldPath(
+                          pageIndex,
+                          sectionIndex,
+                          'content',
+                          'items',
+                          index,
+                          'description',
+                        ),
+                        'textarea',
+                      )}
+                    >
                       {card.description}
                     </p>
 
                     {card.tags && card.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-4">
-                        {card.tags.map((tag) => (
+                        {card.tags.map((tag, tagIndex) => (
                           <span
-                            key={tag}
+                            key={`${tag}-${tagIndex}`}
                             className="px-2.5 py-1 rounded-full text-xs font-semibold"
                             style={{
                               backgroundColor: `${colors.primary}12`,
                               color: colors.primary,
                             }}
+                            {...fieldAttrs(
+                              fieldPath(
+                                pageIndex,
+                                sectionIndex,
+                                'content',
+                                'items',
+                                index,
+                                'tags',
+                                tagIndex,
+                              ),
+                              'text',
+                            )}
                           >
                             {tag}
                           </span>
@@ -148,11 +251,39 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                       {card.metadata?.value && (
                         <div>
                           {content.labels?.metadataLabel && (
-                            <p className="text-xs" style={{ color: colors.muted }}>
+                            <p
+                              className="text-xs"
+                              style={{ color: colors.muted }}
+                              {...fieldAttrs(
+                                fieldPath(
+                                  pageIndex,
+                                  sectionIndex,
+                                  'content',
+                                  'labels',
+                                  'metadataLabel',
+                                ),
+                                'text',
+                              )}
+                            >
                               {content.labels.metadataLabel}
                             </p>
                           )}
-                          <p className="font-bold" style={{ color: colors.primary }}>
+                          <p
+                            className="font-bold"
+                            style={{ color: colors.primary }}
+                            {...fieldAttrs(
+                              fieldPath(
+                                pageIndex,
+                                sectionIndex,
+                                'content',
+                                'items',
+                                index,
+                                'metadata',
+                                'value',
+                              ),
+                              'text',
+                            )}
+                          >
                             {card.metadata.value}
                           </p>
                         </div>
@@ -163,9 +294,25 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                           whileHover={{ x: 4 }}
                           className="inline-flex items-center gap-1 text-sm font-semibold"
                           style={{ color: colors.primary }}
+                          onClick={handleCtaClick}
                         >
-                          {card.cta.text || card.cta.label}
-                          <ArrowRight size={16} />
+                          <span
+                            {...fieldAttrs(
+                              fieldPath(
+                                pageIndex,
+                                sectionIndex,
+                                'content',
+                                'items',
+                                index,
+                                'cta',
+                                ctaKey,
+                              ),
+                              'text',
+                            )}
+                          >
+                            {card.cta.text || card.cta.label}
+                          </span>
+                          <ArrowRight size={16} data-cp-decorative="" />
                         </motion.a>
                       )}
                     </div>
@@ -184,7 +331,14 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="text-center mt-16"
           >
-            <p className="mb-6" style={{ color: colors.subtext }}>
+            <p
+              className="mb-6"
+              style={{ color: colors.subtext }}
+              {...fieldAttrs(
+                fieldPath(pageIndex, sectionIndex, 'content', 'footer', 'text'),
+                'textarea',
+              )}
+            >
               {content.footer.text}
             </p>
             <motion.a
@@ -196,9 +350,24 @@ export function CardGridSection({ content }: { content: CardGridContent }) {
                 borderColor: colors.primary,
                 color: colors.primary,
               }}
+              onClick={handleCtaClick}
             >
-              {content.footer.cta.text || content.footer.cta.label}
-              <ArrowRight size={20} />
+              <span
+                {...fieldAttrs(
+                  fieldPath(
+                    pageIndex,
+                    sectionIndex,
+                    'content',
+                    'footer',
+                    'cta',
+                    content.footer.cta.text ? 'text' : 'label',
+                  ),
+                  'text',
+                )}
+              >
+                {content.footer.cta.text || content.footer.cta.label}
+              </span>
+              <ArrowRight size={20} data-cp-decorative="" />
             </motion.a>
           </motion.div>
         )}

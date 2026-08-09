@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Logo } from '@/components/logo'
 import { useSiteData } from '@/components/site-data-provider'
+import { globalFieldAttrs, jsonPath, shouldBlockPreviewNavigation } from '@/lib/cp-edit'
 import { useThemeColors } from '@/lib/use-theme-colors'
 import { getIcon } from '@/lib/icon-map'
 import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
@@ -36,6 +37,14 @@ export function Navigation() {
 
   const logoHref = navigation.logoHref || '#home'
 
+  const handleNavClick = (e: React.MouseEvent, closeMobile = false) => {
+    if (shouldBlockPreviewNavigation()) {
+      e.preventDefault()
+      return
+    }
+    if (closeMobile) setMobileMenuOpen(false)
+  }
+
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -63,6 +72,7 @@ export function Navigation() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="flex items-center space-x-3 group"
+            onClick={(e) => handleNavClick(e)}
           >
             <div className="relative">
               <Logo
@@ -73,8 +83,9 @@ export function Navigation() {
                 className="absolute -top-1 -right-1"
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                data-cp-decorative=""
               >
-                <SparklesIcon size={16} style={{ color: colors.secondary }} />
+                <SparklesIcon size={16} style={{ color: colors.secondary }} data-cp-decorative="" />
               </motion.div>
             </div>
           </motion.a>
@@ -89,8 +100,15 @@ export function Navigation() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="relative px-4 py-2 font-semibold rounded-lg overflow-hidden group"
                 style={{ color: scrolled ? colors.text : '#ffffff' }}
+                onClick={(e) => handleNavClick(e)}
               >
-                <span className="relative z-10 group-hover:text-white transition-colors">
+                <span
+                  className="relative z-10 group-hover:text-white transition-colors"
+                  {...globalFieldAttrs(
+                    jsonPath('navigation', 'header', 'items', index, 'label'),
+                    'text',
+                  )}
+                >
                   {item.label}
                 </span>
                 <motion.div
@@ -98,6 +116,7 @@ export function Navigation() {
                   style={{
                     background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})`,
                   }}
+                  data-cp-decorative=""
                 />
               </motion.a>
             ))}
@@ -114,8 +133,11 @@ export function Navigation() {
                   background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})`,
                   boxShadow: `0 10px 15px -3px ${colors.primary}30`,
                 }}
+                onClick={(e) => handleNavClick(e)}
               >
-                {navigation.cta.label}
+                <span {...globalFieldAttrs(jsonPath('navigation', 'header', 'cta', 'label'), 'text')}>
+                  {navigation.cta.label}
+                </span>
               </motion.a>
             )}
           </div>
@@ -151,16 +173,23 @@ export function Navigation() {
               className="md:hidden mt-4 glass rounded-lg overflow-hidden"
             >
               <div className="p-4 space-y-2">
-                {navigation.items.map((item) => (
+                {navigation.items.map((item, index) => (
                   <motion.a
                     key={item.id}
                     href={item.href}
                     className="block py-3 px-4 rounded-lg font-semibold transition-all"
                     style={{ color: colors.text }}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, true)}
                     whileHover={{ x: 4 }}
                   >
-                    {item.label}
+                    <span
+                      {...globalFieldAttrs(
+                        jsonPath('navigation', 'header', 'items', index, 'label'),
+                        'text',
+                      )}
+                    >
+                      {item.label}
+                    </span>
                   </motion.a>
                 ))}
                 {navigation.cta.enabled && (
@@ -170,11 +199,15 @@ export function Navigation() {
                     style={{
                       background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})`,
                     }}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, true)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {navigation.cta.label}
+                    <span
+                      {...globalFieldAttrs(jsonPath('navigation', 'header', 'cta', 'label'), 'text')}
+                    >
+                      {navigation.cta.label}
+                    </span>
                   </motion.a>
                 )}
               </div>

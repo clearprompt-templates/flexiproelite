@@ -300,8 +300,32 @@ type SiteDataApiResponse = {
 
 let remoteSiteData: SiteData | null = null
 
+/** Survives hard navigations to *.html on S3 (in-memory alone does not). */
+const SITE_DATA_STORAGE_KEY = 'clearprompt:site-data:v1'
+
+function readStoredSiteData(): SiteData | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = window.sessionStorage.getItem(SITE_DATA_STORAGE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as SiteData
+  } catch {
+    return null
+  }
+}
+
+function writeStoredSiteData(data: SiteData): void {
+  if (typeof window === 'undefined') return
+  try {
+    window.sessionStorage.setItem(SITE_DATA_STORAGE_KEY, JSON.stringify(data))
+  } catch {
+    // Ignore quota / private-mode failures; in-memory cache still works.
+  }
+}
+
 export function setSiteData(data: SiteData) {
   remoteSiteData = data
+  writeStoredSiteData(data)
 }
 
 export function getSiteData(): SiteData {
@@ -309,6 +333,17 @@ export function getSiteData(): SiteData {
     throw new Error('Site data has not been loaded yet')
   }
   return remoteSiteData
+}
+
+/** Non-throwing peek for bootstrap (avoids Loading flash on navigations). */
+export function peekSiteData(): SiteData | null {
+  if (remoteSiteData) return remoteSiteData
+  const stored = readStoredSiteData()
+  if (stored) {
+    remoteSiteData = stored
+    return stored
+  }
+  return null
 }
 
 /** Site origin for the ClearPrompt `origin` header — always the real page origin. */
@@ -434,8 +469,12 @@ export async function submitContactForm(fields: Record<string, string>): Promise
   }
 }
 
+export function getPageByPath(data: SiteData, path: string): SitePage | undefined {
+  return data.pages.find((page) => page.path === path)
+}
+
 export function getHomePage(data: SiteData) {
-  return data.pages.find((page) => page.path === '/') ?? data.pages[0]
+  return getPageByPath(data, '/') ?? data.pages[0]
 }
 
 export function getHomeSections(data: SiteData): SiteSection[] {

@@ -1,6 +1,7 @@
 'use client'
 
 import { useSiteData } from '@/components/site-data-provider'
+import { globalFieldAttrs, jsonPath } from '@/lib/cp-edit'
 
 interface LogoProps {
   className?: string
@@ -16,7 +17,17 @@ export function Logo({ className = '', textColor }: LogoProps) {
     if (url) {
       return (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={url} alt={`${brand.name} Logo`} className={className} />
+        <img
+          src={url}
+          alt={`${brand.name} Logo`}
+          className={className}
+          {...globalFieldAttrs(
+            brand.logoUrl
+              ? jsonPath('siteConfig', 'brand', 'logoUrl')
+              : jsonPath('siteConfig', 'brand', 'logo', 'url'),
+            'image',
+          )}
+        />
       )
     }
   }
@@ -47,7 +58,15 @@ export function Logo({ className = '', textColor }: LogoProps) {
               <stop offset="100%" style={{ stopColor: iconSecondaryColor, stopOpacity: 1 }} />
             </linearGradient>
           </defs>
-          <rect x="5" y="10" width="40" height="40" rx="8" fill="url(#flexipro-logo-grad)" />
+          <rect
+            x="5"
+            y="10"
+            width="40"
+            height="40"
+            rx="8"
+            fill="url(#flexipro-logo-grad)"
+            data-cp-decorative=""
+          />
           <path
             d="M 25 20 L 35 30 L 25 40"
             stroke={iconStrokeColor}
@@ -55,6 +74,7 @@ export function Logo({ className = '', textColor }: LogoProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
             fill="none"
+            data-cp-decorative=""
           />
           <path
             d="M 15 25 L 20 30 L 15 35"
@@ -63,6 +83,7 @@ export function Logo({ className = '', textColor }: LogoProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
             fill="none"
+            data-cp-decorative=""
           />
           <text
             x="55"
@@ -71,6 +92,7 @@ export function Logo({ className = '', textColor }: LogoProps) {
             fontSize="28"
             fontWeight="700"
             fill={fill}
+            {...globalFieldAttrs(jsonPath('siteConfig', 'brand', 'name'), 'text')}
           >
             {brand.name}
           </text>
@@ -79,5 +101,12 @@ export function Logo({ className = '', textColor }: LogoProps) {
     }
   }
 
-  return <span className={`text-2xl font-bold ${className}`}>{brand.name}</span>
+  return (
+    <span
+      className={`text-2xl font-bold ${className}`}
+      {...globalFieldAttrs(jsonPath('siteConfig', 'brand', 'name'), 'text')}
+    >
+      {brand.name}
+    </span>
+  )
 }
