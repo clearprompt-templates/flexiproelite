@@ -1,11 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { MotionConfig } from 'framer-motion'
 import { SiteDataProvider } from '@/components/site-data-provider'
 import { SitePage } from '@/components/site-page'
 import { AnalyticsScripts } from '@/components/analytics-scripts'
+import { CpEditBridge } from '@/components/cp-edit-bridge'
 import { ThemeStyles } from '@/components/theme-styles'
-import { fetchSiteDataByOrigin, type SiteData } from '@/lib/site-data'
+import { isClearPromptEditPreview } from '@/lib/cp-edit'
+import { fetchSiteDataByOrigin, peekSiteData, type SiteData } from '@/lib/site-data'
 import { normalizeThemeColors } from '@/lib/theme-colors'
 import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
 
@@ -51,11 +54,17 @@ function applyDocumentMeta(data: SiteData) {
 }
 
 export function SiteBootstrap() {
-  const [data, setData] = useState<SiteData | null>(null)
+  const [data, setData] = useState<SiteData | null>(() => peekSiteData())
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
+
+    const cached = peekSiteData()
+    if (cached) {
+      setData(cached)
+      applyDocumentMeta(cached)
+    }
 
     fetchSiteDataByOrigin()
       .then((siteData) => {
@@ -66,6 +75,7 @@ export function SiteBootstrap() {
       })
       .catch((err: unknown) => {
         if (!cancelled) {
+          if (peekSiteData()) return
           setError(err instanceof Error ? err.message : 'Failed to load site data')
         }
       })
@@ -85,18 +95,27 @@ export function SiteBootstrap() {
   }
 
   if (!data) {
+    if (isClearPromptEditPreview()) {
+      return null
+    }
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background text-foreground">
+      <div
+        data-cp-boot-loading
+        className="fixed inset-0 flex items-center justify-center bg-background text-foreground"
+      >
         <p className="text-sm tracking-[0.2em] text-muted-foreground">{UI_DEFAULTS.loadingLabel}</p>
       </div>
     )
   }
 
   return (
-    <SiteDataProvider data={data}>
-      <ThemeStyles data={data} />
-      <AnalyticsScripts />
-      <SitePage />
-    </SiteDataProvider>
+    <MotionConfig reducedMotion={isClearPromptEditPreview() ? 'always' : 'user'}>
+      <SiteDataProvider data={data}>
+        <ThemeStyles data={data} />
+        <AnalyticsScripts />
+        <CpEditBridge />
+        <SitePage />
+      </SiteDataProvider>
+    </MotionConfig>
   )
 }

@@ -6,9 +6,10 @@ import './globals.css'
 const fontVariables = getSiteFontVariables()
 
 export const metadata: Metadata = {
+  // Placeholder only — real SEO meta is applied at runtime from the API.
   metadataBase: new URL('http://localhost:3000'),
-  title: 'Loading…',
-  description: 'Loading site content…',
+  title: 'Site',
+  description: '',
 }
 
 export const viewport: Viewport = {
@@ -17,6 +18,19 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 }
 
+/** Hide the Loading shell before hydrate on preview hosts or when session cache exists. */
+const BOOT_CACHE_SCRIPT = `
+(function () {
+  try {
+    var host = location.hostname || '';
+    var preview = /-preview\\.clearprompt\\.dev$/i.test(host);
+    if (preview || sessionStorage.getItem('clearprompt:site-data:v1')) {
+      document.documentElement.classList.add('cp-has-site-cache');
+    }
+  } catch (e) {}
+})();
+`.trim()
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,6 +38,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${fontVariables} bg-background`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: BOOT_CACHE_SCRIPT }} />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: 'html.cp-has-site-cache [data-cp-boot-loading]{display:none!important}',
+          }}
+        />
+      </head>
       <body className="font-sans antialiased text-foreground">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

@@ -5,6 +5,8 @@ import { motion } from 'framer-motion'
 import { getIcon } from '@/lib/icon-map'
 import { useThemeColors } from '@/lib/use-theme-colors'
 import { UI_DEFAULTS } from '@/lib/site-ui-defaults'
+import type { SectionEditContext } from '@/lib/cp-edit'
+import { fieldAttrs, fieldPath, sectionAttrs, shouldBlockPreviewNavigation } from '@/lib/cp-edit'
 import {
   buildContactPayload,
   submitContactForm,
@@ -22,13 +24,19 @@ function resolveColor(
   return { from: fallbackFrom, to: fallbackTo }
 }
 
-export function ContactSection({ content }: { content: ContactContent }) {
+export function ContactSection({
+  edit,
+  content,
+}: {
+  edit: SectionEditContext
+  content: ContactContent
+}) {
+  const { pageIndex, sectionIndex } = edit
   const colors = useThemeColors()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const MessageIcon = getIcon('messageCircle')
   const formEnabled = content.form?.enabled
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,18 +68,25 @@ export function ContactSection({ content }: { content: ContactContent }) {
     content.contactInfo.find((item) => item.type === 'email')?.href ||
     `mailto:${content.contactInfo.find((item) => item.type === 'email')?.value || ''}`
 
+  const handleLinkClick = (e: React.MouseEvent) => {
+    if (shouldBlockPreviewNavigation()) e.preventDefault()
+  }
+
   return (
     <section
       id={content.sectionId}
       className="section-padding bg-gradient-to-b from-white to-gray-50 relative overflow-hidden"
+      {...sectionAttrs(edit)}
     >
       <div
         className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl opacity-20"
         style={{ backgroundColor: `${colors.primary}33` }}
+        data-cp-decorative=""
       />
       <div
         className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl opacity-20"
         style={{ backgroundColor: `${colors.secondary}33` }}
+        data-cp-decorative=""
       />
 
       <div className="container mx-auto container-padding relative z-10">
@@ -82,24 +97,20 @@ export function ContactSection({ content }: { content: ContactContent }) {
           transition={{ duration: 0.7 }}
           className="text-center mb-20"
         >
-          {content.badge && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
-              style={{
-                background: `linear-gradient(to right, ${colors.primary}1a, ${colors.secondary}1a)`,
-                color: colors.primary,
-              }}
-            >
-              <MessageIcon size={16} />
-              {content.badge}
-            </motion.div>
-          )}
-          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient">{content.heading}</h2>
-          <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: colors.subtext }}>
+          <h2
+            className="text-4xl md:text-6xl font-extrabold mb-6 text-gradient"
+            {...fieldAttrs(fieldPath(pageIndex, sectionIndex, 'content', 'heading'), 'text')}
+          >
+            {content.heading}
+          </h2>
+          <p
+            className="text-xl max-w-3xl mx-auto leading-relaxed"
+            style={{ color: colors.subtext }}
+            {...fieldAttrs(
+              fieldPath(pageIndex, sectionIndex, 'content', 'description'),
+              'textarea',
+            )}
+          >
             {content.description}
           </p>
         </motion.div>
@@ -129,11 +140,26 @@ export function ContactSection({ content }: { content: ContactContent }) {
                     style={{
                       background: `linear-gradient(135deg, ${itemColor.from}, ${itemColor.to})`,
                     }}
+                    data-cp-decorative=""
                   >
-                    <Icon size={36} className="text-white" />
+                    <Icon size={36} className="text-white" data-cp-decorative="" />
                   </motion.div>
 
-                  <h3 className="text-2xl font-bold mb-4" style={{ color: colors.text }}>
+                  <h3
+                    className="text-2xl font-bold mb-4"
+                    style={{ color: colors.text }}
+                    {...fieldAttrs(
+                      fieldPath(
+                        pageIndex,
+                        sectionIndex,
+                        'content',
+                        'contactInfo',
+                        index,
+                        'label',
+                      ),
+                      'text',
+                    )}
+                  >
                     {item.label}
                   </h3>
 
@@ -142,11 +168,40 @@ export function ContactSection({ content }: { content: ContactContent }) {
                       href={item.href}
                       className="font-medium break-words transition-colors hover:text-[var(--primary-color)]"
                       style={{ color: colors.subtext }}
+                      onClick={handleLinkClick}
                     >
-                      {item.value}
+                      <span
+                        {...fieldAttrs(
+                          fieldPath(
+                            pageIndex,
+                            sectionIndex,
+                            'content',
+                            'contactInfo',
+                            index,
+                            'value',
+                          ),
+                          'text',
+                        )}
+                      >
+                        {item.value}
+                      </span>
                     </a>
                   ) : (
-                    <p className="font-medium leading-relaxed" style={{ color: colors.subtext }}>
+                    <p
+                      className="font-medium leading-relaxed"
+                      style={{ color: colors.subtext }}
+                      {...fieldAttrs(
+                        fieldPath(
+                          pageIndex,
+                          sectionIndex,
+                          'content',
+                          'contactInfo',
+                          index,
+                          'value',
+                        ),
+                        'text',
+                      )}
+                    >
                       {item.value}
                     </p>
                   )}
@@ -166,10 +221,23 @@ export function ContactSection({ content }: { content: ContactContent }) {
           >
             {submitted ? (
               <div className="rounded-3xl bg-white p-10 text-center shadow-xl border border-gray-100">
-                <h3 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>
+                <h3
+                  className="text-2xl font-bold mb-2"
+                  style={{ color: colors.text }}
+                  {...fieldAttrs(
+                    fieldPath(pageIndex, sectionIndex, 'content', 'form', 'successTitle'),
+                    'text',
+                  )}
+                >
                   {content.form.successTitle || UI_DEFAULTS.contactSuccessTitle}
                 </h3>
-                <p style={{ color: colors.subtext }}>
+                <p
+                  style={{ color: colors.subtext }}
+                  {...fieldAttrs(
+                    fieldPath(pageIndex, sectionIndex, 'content', 'form', 'successDescription'),
+                    'textarea',
+                  )}
+                >
                   {content.form.successDescription || UI_DEFAULTS.contactSuccessDescription}
                 </p>
               </div>
@@ -178,15 +246,27 @@ export function ContactSection({ content }: { content: ContactContent }) {
                 onSubmit={handleSubmit}
                 className="rounded-3xl bg-white p-8 md:p-10 shadow-xl border border-gray-100 space-y-5"
               >
-                {content.form.fields.map((field) => (
-                  <div key={field.name}>
-                    <label
-                      htmlFor={field.name}
-                      className="block text-sm font-semibold mb-2"
+                {content.form.fields.map((field, fieldIndex) => (
+                  <div key={field.name} className="relative">
+                    {/* Span (not htmlFor label) so Direct edit can select the label without focusing the input */}
+                    <span
+                      className="relative z-[5] mb-2 block text-sm font-semibold"
                       style={{ color: colors.text }}
+                      {...fieldAttrs(
+                        fieldPath(
+                          pageIndex,
+                          sectionIndex,
+                          'content',
+                          'form',
+                          'fields',
+                          fieldIndex,
+                          'label',
+                        ),
+                        'text',
+                      )}
                     >
                       {field.label}
-                    </label>
+                    </span>
                     {field.type === 'textarea' ? (
                       <textarea
                         id={field.name}
@@ -194,6 +274,7 @@ export function ContactSection({ content }: { content: ContactContent }) {
                         required={field.required}
                         rows={4}
                         placeholder={field.placeholder}
+                        aria-label={field.label}
                         className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                       />
                     ) : (
@@ -203,6 +284,7 @@ export function ContactSection({ content }: { content: ContactContent }) {
                         type={field.type}
                         required={field.required}
                         placeholder={field.placeholder}
+                        aria-label={field.label}
                         className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                       />
                     )}
@@ -218,6 +300,10 @@ export function ContactSection({ content }: { content: ContactContent }) {
                   style={{
                     background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})`,
                   }}
+                  {...fieldAttrs(
+                    fieldPath(pageIndex, sectionIndex, 'content', 'form', 'submitLabel'),
+                    'text',
+                  )}
                 >
                   {isSubmitting
                     ? UI_DEFAULTS.contactSubmittingLabel
@@ -243,21 +329,50 @@ export function ContactSection({ content }: { content: ContactContent }) {
               }}
             >
               <div className="relative z-10">
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h3
+                  className="text-3xl md:text-4xl font-bold text-white mb-4"
+                  {...fieldAttrs(
+                    fieldPath(pageIndex, sectionIndex, 'content', 'cta', 'heading'),
+                    'text',
+                  )}
+                >
                   {content.cta.heading}
                 </h3>
-                <p className="text-lg text-white/90 mb-8">{content.cta.description}</p>
+                <p
+                  className="text-lg text-white/90 mb-8"
+                  {...fieldAttrs(
+                    fieldPath(pageIndex, sectionIndex, 'content', 'cta', 'description'),
+                    'textarea',
+                  )}
+                >
+                  {content.cta.description}
+                </p>
                 <motion.a
                   href={content.cta.button.href || emailHref}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="inline-flex items-center gap-2 px-8 py-4 bg-white rounded-xl font-bold shadow-2xl transition-all"
                   style={{ color: colors.primary }}
+                  onClick={handleLinkClick}
                 >
-                  {content.cta.button.text || content.cta.button.label}
+                  <span
+                    {...fieldAttrs(
+                      fieldPath(
+                        pageIndex,
+                        sectionIndex,
+                        'content',
+                        'cta',
+                        'button',
+                        content.cta.button.text ? 'text' : 'label',
+                      ),
+                      'text',
+                    )}
+                  >
+                    {content.cta.button.text || content.cta.button.label}
+                  </span>
                   {(() => {
                     const CTAIcon = getIcon(content.cta.button.icon || 'send')
-                    return <CTAIcon size={20} />
+                    return <CTAIcon size={20} data-cp-decorative="" />
                   })()}
                 </motion.a>
               </div>

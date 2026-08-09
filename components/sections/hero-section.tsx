@@ -3,92 +3,105 @@
 import { motion } from 'framer-motion'
 import { getIcon } from '@/lib/icon-map'
 import { useThemeColors } from '@/lib/use-theme-colors'
+import type { SectionEditContext } from '@/lib/cp-edit'
+import { fieldAttrs, fieldPath, sectionAttrs, shouldBlockPreviewNavigation } from '@/lib/cp-edit'
 import type { HeroContent } from '@/lib/site-data'
 
-export function HeroSection({ content }: { content: HeroContent }) {
+export function HeroSection({
+  edit,
+  content,
+}: {
+  edit: SectionEditContext
+  content: HeroContent
+}) {
+  const { pageIndex, sectionIndex } = edit
   const colors = useThemeColors()
   const settings = content.settings ?? {}
   const headingText = content.heading?.text || content.headline || ''
+  const headingPath = content.heading?.text
+    ? fieldPath(pageIndex, sectionIndex, 'content', 'heading', 'text')
+    : fieldPath(pageIndex, sectionIndex, 'content', 'headline')
   const titleWords = headingText.split(' ')
   const splitAt = content.heading?.splitAt ?? 3
   const firstPart = titleWords.slice(0, splitAt).join(' ')
   const secondPart = titleWords.slice(splitAt).join(' ')
   const ArrowRight = getIcon('arrowRight')
-  const SparklesIcon = getIcon(content.badge?.icon || 'sparkles')
+
+  const primaryCtaKey = content.cta.primary.text ? 'text' : 'label'
+  const secondaryCtaKey = content.cta.secondary?.text ? 'text' : 'label'
+
+  const handleCtaClick = (e: React.MouseEvent) => {
+    if (shouldBlockPreviewNavigation()) e.preventDefault()
+  }
 
   return (
     <section
       id={content.sectionId}
       className="relative min-h-screen flex items-center justify-center overflow-hidden py-20"
       style={{
-        backgroundImage: content.backgroundImage?.url
-          ? `url(${content.backgroundImage.url})`
-          : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: settings.parallax ? 'fixed' : 'scroll',
       }}
+      {...sectionAttrs(edit)}
     >
+      {/* Background image hit target — overlays stay decorative so Direct edit can select the photo */}
+      <div
+        className="absolute inset-0 z-0"
+        {...fieldAttrs(
+          fieldPath(pageIndex, sectionIndex, 'content', 'backgroundImage', 'url'),
+          'image',
+        )}
+      >
+        {content.backgroundImage?.url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={content.backgroundImage.url}
+            alt={content.backgroundImage.alt || ''}
+            className="pointer-events-none h-full w-full object-cover"
+            data-cp-decorative=""
+          />
+        ) : (
+          <div className="h-full w-full bg-gray-900" data-cp-decorative="" />
+        )}
+      </div>
+
       {settings.overlay !== false && (
         <>
           <div
-            className="absolute inset-0"
+            className="pointer-events-none absolute inset-0 z-[1]"
             style={{
               background: `linear-gradient(135deg, ${colors.primary}dd 0%, ${colors.secondary}bb 50%, ${colors.primary}dd 100%)`,
               opacity: settings.overlayOpacity ?? 0.85,
             }}
+            data-cp-decorative=""
           />
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 z-[1] bg-black/50" data-cp-decorative="" />
+          <div
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/20 to-transparent"
+            data-cp-decorative=""
+          />
         </>
       )}
 
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden" data-cp-decorative="">
         <motion.div
           className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl"
           style={{ backgroundColor: `${colors.primary}33` }}
           animate={{ scale: [1, 1.2, 1], x: [0, 50, 0], y: [0, 30, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          data-cp-decorative=""
         />
         <motion.div
           className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl"
           style={{ backgroundColor: `${colors.secondary}33` }}
           animate={{ scale: [1, 1.3, 1], x: [0, -30, 0], y: [0, -50, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          data-cp-decorative=""
         />
       </div>
 
       <div className="container mx-auto container-padding py-32 px-4 text-center relative z-10">
-        {content.badge?.visible !== false && content.badge?.text && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 inline-flex"
-          >
-            <div
-              className="px-6 py-2 rounded-full border"
-              style={{
-                background: 'rgba(0, 0, 0, 0.5)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                borderColor: 'rgba(255, 255, 255, 0.3)',
-              }}
-            >
-              <span
-                className="text-white text-sm font-semibold flex items-center gap-2"
-                style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' }}
-              >
-                <SparklesIcon
-                  size={16}
-                  style={{ color: '#ffffff', filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))' }}
-                />
-                {content.badge.text}
-              </span>
-            </div>
-          </motion.div>
-        )}
-
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -96,11 +109,14 @@ export function HeroSection({ content }: { content: HeroContent }) {
           className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white mb-8 leading-tight md:leading-tight px-4"
           style={{ lineHeight: '1.2' }}
         >
-          <span className="block">{firstPart}</span>
+          <span className="block" {...fieldAttrs(headingPath, 'text')}>
+            {firstPart}
+          </span>
           {secondPart && (
             <span
               className="block text-gradient mt-4 pb-2"
               style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}
+              {...fieldAttrs(headingPath, 'text')}
             >
               {secondPart}
             </span>
@@ -112,6 +128,12 @@ export function HeroSection({ content }: { content: HeroContent }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
           className="text-xl md:text-2xl text-white mb-12 max-w-3xl mx-auto leading-relaxed opacity-95 px-4"
+          {...fieldAttrs(
+            content.subheading?.text
+              ? fieldPath(pageIndex, sectionIndex, 'content', 'subheading', 'text')
+              : fieldPath(pageIndex, sectionIndex, 'content', 'description'),
+            'textarea',
+          )}
         >
           {content.subheading?.text || content.description}
         </motion.p>
@@ -130,9 +152,21 @@ export function HeroSection({ content }: { content: HeroContent }) {
             style={{
               background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})`,
             }}
+            onClick={handleCtaClick}
           >
-            {content.cta.primary.text || content.cta.primary.label}
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <span
+              {...fieldAttrs(
+                fieldPath(pageIndex, sectionIndex, 'content', 'cta', 'primary', primaryCtaKey),
+                'text',
+              )}
+            >
+              {content.cta.primary.text || content.cta.primary.label}
+            </span>
+            <ArrowRight
+              size={20}
+              className="group-hover:translate-x-1 transition-transform"
+              data-cp-decorative=""
+            />
           </motion.a>
           {content.cta.secondary && (
             <motion.a
@@ -140,8 +174,23 @@ export function HeroSection({ content }: { content: HeroContent }) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 rounded-xl font-bold text-white glass-dark border border-white/30 hover:border-white/50 transition-all"
+              onClick={handleCtaClick}
             >
-              {content.cta.secondary.text || content.cta.secondary.label}
+              <span
+                {...fieldAttrs(
+                  fieldPath(
+                    pageIndex,
+                    sectionIndex,
+                    'content',
+                    'cta',
+                    'secondary',
+                    secondaryCtaKey,
+                  ),
+                  'text',
+                )}
+              >
+                {content.cta.secondary.text || content.cta.secondary.label}
+              </span>
             </motion.a>
           )}
         </motion.div>
@@ -169,8 +218,16 @@ export function HeroSection({ content }: { content: HeroContent }) {
                     borderColor: 'rgba(255, 255, 255, 0.25)',
                   }}
                 >
-                  <Icon size={18} style={{ color: '#ffffff' }} />
-                  <span className="text-white font-semibold">{feature.text}</span>
+                  <Icon size={18} style={{ color: '#ffffff' }} data-cp-decorative="" />
+                  <span
+                    className="text-white font-semibold"
+                    {...fieldAttrs(
+                      fieldPath(pageIndex, sectionIndex, 'content', 'features', index, 'text'),
+                      'text',
+                    )}
+                  >
+                    {feature.text}
+                  </span>
                 </motion.div>
               )
             })}
@@ -190,15 +247,27 @@ export function HeroSection({ content }: { content: HeroContent }) {
             transition={{ duration: 2, repeat: Infinity }}
             className="text-white text-center"
           >
-            <div className="w-6 h-10 border-2 border-white/50 rounded-full mx-auto flex items-start justify-center p-2">
+            <div
+              className="w-6 h-10 border-2 border-white/50 rounded-full mx-auto flex items-start justify-center p-2"
+              data-cp-decorative=""
+            >
               <motion.div
                 animate={{ y: [0, 12, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 className="w-1.5 h-1.5 bg-white rounded-full"
+                data-cp-decorative=""
               />
             </div>
             {content.scrollIndicator?.text && (
-              <p className="text-xs text-white/70 mt-2">{content.scrollIndicator.text}</p>
+              <p
+                className="text-xs text-white/70 mt-2"
+                {...fieldAttrs(
+                  fieldPath(pageIndex, sectionIndex, 'content', 'scrollIndicator', 'text'),
+                  'text',
+                )}
+              >
+                {content.scrollIndicator.text}
+              </p>
             )}
           </motion.div>
         </motion.div>
